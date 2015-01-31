@@ -4568,6 +4568,8 @@ message MetricsEvent {
     COLOR_MODE_SETTINGS = 1143;
 
     // ---- End O-MR1 Constants, all O-MR1 constants go above this line ----
+    // Additional QS tiles
+    QS_ADDED = 1144;
 
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
