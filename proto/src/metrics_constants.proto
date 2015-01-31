@@ -3974,6 +3974,9 @@ message MetricsEvent {
 
     // ---- End O Constants, all O constants go above this line ----
 
+    // Additional QS tiles
+    QS_ADDED = 412;
+
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
   }
