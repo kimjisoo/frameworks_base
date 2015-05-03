@@ -31,6 +31,7 @@ import android.app.TaskStackBuilder;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -84,6 +85,7 @@ import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DateTimeView;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
@@ -170,6 +172,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     // for heads up notifications
     protected HeadsUpManager mHeadsUpManager;
+    protected boolean mForceAllHeads;
 
     protected int mCurrentUserId = 0;
     final protected SparseArray<UserInfo> mCurrentProfiles = new SparseArray<UserInfo>();
@@ -249,6 +252,10 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected AssistManager mAssistManager;
 
+    private ArrayList<String> mDndList = new ArrayList<String>();
+    private ArrayList<String> mBlacklist = new ArrayList<String>();
+    private ArrayList<String> mWhitelist = new ArrayList<String>();
+
     @Override  // NotificationData.Environment
     public boolean isDeviceProvisioned() {
         return mDeviceProvisioned;
@@ -279,6 +286,46 @@ public abstract class BaseStatusBar extends SystemUI implements
             mUsersAllowingPrivateNotifications.clear();
             // ... and refresh all the notifications
             updateNotifications();
+        }
+    };
+
+    private class SettingsObserver extends ContentObserver {
+        public SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        public void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_CUSTOM_VALUES), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_WHITELIST_VALUES), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_FORCE_ALL), false, this, UserHandle.USER_ALL);
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        private void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+
+            final String dndString = Settings.System.getStringForUser(resolver,
+                    Settings.System.HEADS_UP_CUSTOM_VALUES, UserHandle.USER_CURRENT);
+            final String blackString = Settings.System.getStringForUser(resolver,
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES, UserHandle.USER_CURRENT);
+            final String whiteString = Settings.System.getStringForUser(resolver,
+                    Settings.System.HEADS_UP_WHITELIST_VALUES, UserHandle.USER_CURRENT);
+            mForceAllHeads = Settings.System.getIntForUser(resolver,
+                    Settings.System.HEADS_UP_FORCE_ALL, 0, UserHandle.USER_CURRENT) == 1;
+            splitAndAddToArrayList(mDndList, dndString, "\\|");
+            splitAndAddToArrayList(mBlacklist, blackString, "\\|");
+            splitAndAddToArrayList(mWhitelist, whiteString, "\\|");
         }
     };
 
@@ -523,15 +570,15 @@ public abstract class BaseStatusBar extends SystemUI implements
         @Override
         public void onNotificationRankingUpdate(final RankingMap rankingMap) {
             if (DEBUG) Log.d(TAG, "onRankingUpdate");
-            if (rankingMap != null) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    updateNotificationRanking(rankingMap);
-                }
-            });
-        }                            }
-
+                if (rankingMap != null) {
+                    mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateNotificationRanking(rankingMap);
+                    }
+                });
+            }
+        }
     };
 
     private void updateCurrentProfilesCache() {
@@ -668,6 +715,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         mContext.registerReceiverAsUser(mAllUsersReceiver, UserHandle.ALL, allUsersFilter,
                 null, null);
         updateCurrentProfilesCache();
+
+        SettingsObserver observer = new SettingsObserver(mHandler);
+        observer.observe();
     }
 
     protected void notifyUserAboutHiddenNotifications() {
@@ -2177,8 +2227,14 @@ public abstract class BaseStatusBar extends SystemUI implements
             return false;
         }
 
+        // check if package is blacklisted first
+        if (isPackageBlacklisted(sbn.getPackageName()) || isPackageInDnd(getTopLevelPackage())) {
+            return false;
+        }
+
         Notification notification = sbn.getNotification();
         // some predicates to make the boolean logic legible
+        boolean whiteListed = mForceAllHeads || isPackageWhitelisted(sbn.getPackageName());
         boolean isNoisy = (notification.defaults & Notification.DEFAULT_SOUND) != 0
                 || (notification.defaults & Notification.DEFAULT_VIBRATE) != 0
                 || notification.sound != null
@@ -2192,14 +2248,21 @@ public abstract class BaseStatusBar extends SystemUI implements
                 && mAccessibilityManager.isTouchExplorationEnabled();
         boolean justLaunchedFullScreenIntent = entry.hasJustLaunchedFullScreenIntent();
 
-        boolean interrupt = (isFullscreen || (isHighPriority && (isNoisy || hasTicker)))
+        final InputMethodManager inputMethodManager = (InputMethodManager)
+                mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        boolean isIMEShowing = inputMethodManager.isImeShowing();
+
+        boolean interrupt = (whiteListed
+                || (isFullscreen || (isHighPriority && (isNoisy || hasTicker))))
                 && isAllowed
                 && !accessibilityForcesLaunch
                 && !justLaunchedFullScreenIntent
                 && mPowerManager.isScreenOn()
                 && (!mStatusBarKeyguardViewManager.isShowing()
                         || mStatusBarKeyguardViewManager.isOccluded())
-                && !mStatusBarKeyguardViewManager.isInputRestricted();
+                && !mStatusBarKeyguardViewManager.isInputRestricted()
+                && !isIMEShowing;
         try {
             interrupt = interrupt && !mDreamManager.isDreaming();
         } catch (RemoteException e) {
@@ -2210,6 +2273,38 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     protected abstract boolean isSnoozedPackage(StatusBarNotification sbn);
+
+    private String getTopLevelPackage() {
+        final ActivityManager am = (ActivityManager)
+                mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+        ComponentName componentInfo = taskInfo.get(0).topActivity;
+        return componentInfo.getPackageName();
+    }
+
+    private boolean isPackageInDnd(String packageName) {
+        return mDndList.contains(packageName);
+    }
+
+    private boolean isPackageBlacklisted(String packageName) {
+        return mBlacklist.contains(packageName);
+    }
+
+    private boolean isPackageWhitelisted(String packageName) {
+        return mWhitelist.contains(packageName);
+    }
+
+    private void splitAndAddToArrayList(ArrayList<String> arrayList,
+            String baseString, String separator) {
+        // clear first
+        arrayList.clear();
+        if (baseString != null) {
+            final String[] array = TextUtils.split(baseString, separator);
+            for (String item : array) {
+                arrayList.add(item.trim());
+            }
+        }
+    }
 
     public void setInteracting(int barWindow, boolean interacting) {
         // hook for subclasses
