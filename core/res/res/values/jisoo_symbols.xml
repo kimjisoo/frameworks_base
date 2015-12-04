@@ -89,4 +89,7 @@
   <java-symbol type="style" name="PowerMenuflyAnimation" />
   <java-symbol type="style" name="PowerMenuCardAnimation" />
 
+  <!-- Screen Recording -->
+  <java-symbol type="bool" name="config_enableScreenrecordChord" />
+
 </resources>
