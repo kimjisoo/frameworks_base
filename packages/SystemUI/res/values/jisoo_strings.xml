@@ -25,6 +25,11 @@
     <string name="accessibility_quick_settings_sync_on">Sync on</string>
     <string name="accessibility_quick_settings_sync_changed_off">Sync turned off</string>
     <string name="accessibility_quick_settings_sync_changed_on">Sync turned on</string>
+    <string name="quick_settings_expanded_desktop_label">Full screen</string>
+    <string name="quick_settings_expanded_desktop_on">Full screen</string>
+    <string name="quick_settings_expanded_navigation_off">Statusbar only</string>
+    <string name="quick_settings_expanded_statusbar_off">Navbar only</string>
+    <string name="quick_settings_expanded_desktop_off">Normal screen</string>
     <string name="quick_settings_sync_on">Sync on</string>
     <string name="quick_settings_sync_off">Sync off</string>
     <string name="quick_settings_bluetooth_off">BT off</string>
