@@ -92,6 +92,7 @@ import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.util.ArrayMap;
@@ -512,6 +513,14 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.ACCESSIBILITY_SOFT_KEYBOARD_MODE), false, this, userId);
             mRegistered = true;
+
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_IME_SWITCHER),
+                    false, new ContentObserver(mHandler) {
+                        public void onChange(boolean selfChange) {
+                            updateInputMethodsFromSettingsLocked(true);
+                        }
+                    }, UserHandle.USER_ALL);
         }
 
         @Override public void onChange(boolean selfChange, Uri uri) {
@@ -1086,8 +1095,6 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
                     mStatusBar.setIconVisibility(mSlotIme, false);
                 }
                 updateSystemUiLocked(mCurToken, mImeWindowVis, mBackDisposition);
-                mShowOngoingImeSwitcherForPhones = mRes.getBoolean(
-                        com.android.internal.R.bool.show_ongoing_ime_switcher);
                 if (mShowOngoingImeSwitcherForPhones) {
                     mWindowManagerInternal.setOnHardKeyboardStatusChangeListener(
                             mHardKeyboardListener);
@@ -1964,6 +1971,17 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
             // There is no longer an input method set, so stop any current one.
             resetCurrentMethodAndClient(InputMethodClient.UNBIND_REASON_NO_IME);
         }
+
+        // code to disable the IME switcher with config_show_IMESwitcher set = false
+        try {
+            mShowOngoingImeSwitcherForPhones =
+                Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_IME_SWITCHER, UserHandle.USER_CURRENT) == 1;
+        } catch (SettingNotFoundException e) {
+            mShowOngoingImeSwitcherForPhones = mRes.getBoolean(
+                com.android.internal.R.bool.config_show_IMESwitcher);
+        }
+
         // Here is not the perfect place to reset the switching controller. Ideally
         // mSwitchingController and mSettings should be able to share the same state.
         // TODO: Make sure that mSwitchingController and mSettings are sharing the
