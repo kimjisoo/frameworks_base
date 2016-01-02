@@ -79,6 +79,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_DISMISS_KEYBOARD_SHORTCUTS    = 32 << MSG_SHIFT;
     private static final int MSG_HANDLE_SYSNAV_KEY             = 33 << MSG_SHIFT;
     private static final int MSG_SHOW_GLOBAL_ACTIONS           = 34 << MSG_SHIFT;
+    private static final int MSG_SET_AUTOROTATE_STATUS         = 35 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -136,6 +137,7 @@ public class CommandQueue extends IStatusBar.Stub {
 
         default void handleSystemNavigationKey(int arg1) { }
         default void handleShowGlobalActionsMenu() { }
+        default void setAutoRotate(boolean enabled) { }
     }
 
     @VisibleForTesting
@@ -429,6 +431,15 @@ public class CommandQueue extends IStatusBar.Stub {
         }
     }
 
+    @Override
+    public void setAutoRotate(boolean enabled) {
+        synchronized (mLock) {
+            mHandler.removeMessages(MSG_SET_AUTOROTATE_STATUS);
+            mHandler.obtainMessage(MSG_SET_AUTOROTATE_STATUS,
+                enabled ? 1 : 0, 0, null).sendToTarget();
+        }
+    }
+
     private final class H extends Handler {
         private H(Looper l) {
             super(l);
@@ -608,6 +619,11 @@ public class CommandQueue extends IStatusBar.Stub {
                 case MSG_SHOW_GLOBAL_ACTIONS:
                     for (int i = 0; i < mCallbacks.size(); i++) {
                         mCallbacks.get(i).handleShowGlobalActionsMenu();
+                    }
+                    break;
+                case MSG_SET_AUTOROTATE_STATUS:
+                    for (int i = 0; i < mCallbacks.size(); i++) {
+                        mCallbacks.get(i).setAutoRotate(msg.arg1 != 0);
                     }
                     break;
             }
