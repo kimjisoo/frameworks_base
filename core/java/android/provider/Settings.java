@@ -3789,6 +3789,12 @@ public final class Settings {
         public static final String CALL_FLIP_ACTION_KEY = "call_flip_action_key";
 
         /**
+         * Transparent volume dialog
+         * @hide
+         */
+        public static final String TRANSPARENT_VOLUME_DIALOG = "transparent_volume_dialog";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
