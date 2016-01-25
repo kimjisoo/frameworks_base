@@ -22,6 +22,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -59,6 +60,10 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
     private static final String STATUS_BAR_BATTERY_STYLE_HIDDEN = "4";
     private static final String STATUS_BAR_BATTERY_STYLE_TEXT = "6";
     private static final String QS_NUM_TILE_COLUMNS = "qs_num_tile_columns";
+
+    private static final String QUICK_PULLDOWN = "quick_pulldown";
+    private static final String QS_SHOW_BRIGHTNESS_SLIDER = "qs_show_brightness_slider";
+
     public static final String SETTING_SEEN_TUNER_WARNING = "seen_tuner_warning";
 
 /*    private final SettingObserver mSettingObserver = new SettingObserver();
@@ -68,6 +73,10 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
     private ListPreference mStatusBarBattery;
     private ListPreference mStatusBarBatteryShowPercent;
     private ListPreference mNumColumns;
+
+    private ListPreference mQuickPulldown;
+
+    private SwitchPreference mShowBrightnessSlider;
 
     private int mbatteryStyle;
     private int mbatteryShowPercent;
@@ -130,6 +139,19 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
         mNumColumns.setValue(String.valueOf(numColumns));
         updateNumColumnsSummary(numColumns);
         mNumColumns.setOnPreferenceChangeListener(this);
+
+        mQuickPulldown = (ListPreference) findPreference(QUICK_PULLDOWN);
+        int quickPulldownValue = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 0, UserHandle.USER_CURRENT);
+        mQuickPulldown.setValue(String.valueOf(quickPulldownValue));
+        mQuickPulldown.setOnPreferenceChangeListener(this);
+        updatePulldownSummary(quickPulldownValue);
+
+        mShowBrightnessSlider = (SwitchPreference) findPreference(QS_SHOW_BRIGHTNESS_SLIDER);
+        int showBrightnessSlider = Settings.Secure.getIntForUser(resolver,
+            Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER, 1, UserHandle.USER_CURRENT);
+        mShowBrightnessSlider.setChecked(showBrightnessSlider == 1);
+        mShowBrightnessSlider.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -212,6 +234,15 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
             Settings.Secure.putIntForUser(resolver, Settings.Secure.QS_NUM_TILE_COLUMNS,
                     numColumns, UserHandle.USER_CURRENT);
             updateNumColumnsSummary(numColumns);
+        } else if (preference == mQuickPulldown) {
+            int quickPulldownValue = Integer.valueOf((String) newValue);
+            Settings.System.putIntForUser(resolver, Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN,
+                    quickPulldownValue, UserHandle.USER_CURRENT);
+            updatePulldownSummary(quickPulldownValue);
+            return true;
+        } else if (preference == mShowBrightnessSlider) {
+            Settings.Secure.putIntForUser(resolver, Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER,
+                    mShowBrightnessSlider.isChecked() ? 0 : 1, UserHandle.USER_CURRENT);
             return true;
         }
         return false;
@@ -268,6 +299,18 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
             return Math.max(1, val);
         } catch (Exception e) {
             return 3;
+    }
+
+    private void updatePulldownSummary(int value) {
+        Resources res = getResources();
+        if (value == 0) {
+            // quick pulldown deactivated
+            mQuickPulldown.setSummary(res.getString(R.string.quick_pulldown_off));
+        } else {
+            String direction = res.getString(value == 2
+                    ? R.string.quick_pulldown_summary_left
+                    : R.string.quick_pulldown_summary_right);
+            mQuickPulldown.setSummary(res.getString(R.string.quick_pulldown_summary, direction));
         }
     }
 }
