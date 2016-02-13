@@ -118,4 +118,7 @@
     <string name="status_bar_category">Status bar options</string>
     <string name="status_bar_icons">Status bar icons</string>
 
+    <!-- Smart PullDown Warning -->
+    <string name="smart_pulldown_disabled">Smart pulldown is disabled</string>
+
 </resources>
