@@ -50,17 +50,18 @@ public class QSTileView extends ViewGroup {
 
     protected final Context mContext;
     private final View mIcon;
-    private final View mDivider;
+    protected final View mDivider;
     private final H mHandler = new H();
-    private final int mIconSizePx;
+    private int mIconSizePx;
+    private float mSizeScale = 1.0f;
     private final int mTileSpacingPx;
     private int mTilePaddingTopPx;
-    private final int mTilePaddingBelowIconPx;
+    private int mTilePaddingBelowIconPx;
     private final int mDualTileVerticalPaddingPx;
     private final View mTopBackgroundView;
 
-    private TextView mLabel;
-    private QSDualTileLabel mDualLabel;
+    protected TextView mLabel;
+    protected QSDualTileLabel mDualLabel;
     private boolean mDual;
     private OnClickListener mClickPrimary;
     private OnClickListener mClickSecondary;
@@ -73,9 +74,8 @@ public class QSTileView extends ViewGroup {
 
         mContext = context;
         final Resources res = context.getResources();
-        mIconSizePx = res.getDimensionPixelSize(R.dimen.qs_tile_icon_size);
+        updateDimens(res, 1.0f);
         mTileSpacingPx = res.getDimensionPixelSize(R.dimen.qs_tile_spacing);
-        mTilePaddingBelowIconPx =  res.getDimensionPixelSize(R.dimen.qs_tile_padding_below_icon);
         mDualTileVerticalPaddingPx =
                 res.getDimensionPixelSize(R.dimen.qs_dual_tile_padding_vertical);
         mTileBackground = newTileBackground();
@@ -100,6 +100,14 @@ public class QSTileView extends ViewGroup {
         setId(View.generateViewId());
     }
 
+    void updateDimens(Resources res, float scaleFactor) {
+        mSizeScale = scaleFactor;
+        mIconSizePx = Math
+                .round(res.getDimensionPixelSize(R.dimen.qs_tile_icon_size) * scaleFactor);
+        mTilePaddingBelowIconPx = Math.round(res
+                .getDimensionPixelSize(R.dimen.qs_tile_padding_below_icon) * scaleFactor);
+    }
+
     private void updateTopPadding() {
         Resources res = getResources();
         int padding = res.getDimensionPixelSize(R.dimen.qs_tile_padding_top);
@@ -121,7 +129,7 @@ public class QSTileView extends ViewGroup {
         }
     }
 
-    private void recreateLabel() {
+    protected void recreateLabel() {
         CharSequence labelText = null;
         CharSequence labelDescription = null;
         if (mLabel != null) {
@@ -131,7 +139,9 @@ public class QSTileView extends ViewGroup {
         }
         if (mDualLabel != null) {
             labelText = mDualLabel.getText();
-            labelDescription = mLabel.getContentDescription();
+            if (mLabel != null) {
+                labelDescription = mLabel.getContentDescription();
+            }
             removeView(mDualLabel);
             mDualLabel = null;
         }
@@ -165,7 +175,7 @@ public class QSTileView extends ViewGroup {
             mLabel.setPadding(0, 0, 0, 0);
             mLabel.setTypeface(CONDENSED);
             mLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    res.getDimensionPixelSize(R.dimen.qs_tile_text_size));
+                    Math.round(res.getDimensionPixelSize(R.dimen.qs_tile_text_size) * mSizeScale));
             mLabel.setClickable(false);
             if (labelText != null) {
                 mLabel.setText(labelText);
@@ -177,14 +187,12 @@ public class QSTileView extends ViewGroup {
     public boolean setDual(boolean dual) {
         final boolean changed = dual != mDual;
         mDual = dual;
-        if (changed) {
-            recreateLabel();
-        }
         if (mTileBackground instanceof RippleDrawable) {
             setRipple((RippleDrawable) mTileBackground);
         }
         if (dual) {
             mTopBackgroundView.setOnClickListener(mClickPrimary);
+            mTopBackgroundView.setOnLongClickListener(mLongClick);
             setOnClickListener(null);
             setClickable(false);
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
@@ -200,6 +208,10 @@ public class QSTileView extends ViewGroup {
         mTopBackgroundView.setFocusable(dual);
         setFocusable(!dual);
         mDivider.setVisibility(dual ? VISIBLE : GONE);
+        if (changed) {
+            recreateLabel();
+            updateTopPadding();
+        }
         postInvalidate();
         return changed;
     }
@@ -285,7 +297,7 @@ public class QSTileView extends ViewGroup {
     private void updateRippleSize(int width, int height) {
         // center the touch feedback on the center of the icon, and dial it down a bit
         final int cx = width / 2;
-        final int cy = mDual ? mIcon.getTop() + mIcon.getHeight() / 2 : height / 2;
+        final int cy = mDual ? mIcon.getTop() + mIcon.getHeight() : height / 2;
         final int rad = (int)(mIcon.getHeight() * 1.25f);
         mRipple.setHotspotBounds(cx - rad, cy - rad, cx + rad, cy + rad);
     }

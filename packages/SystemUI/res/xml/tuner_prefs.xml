@@ -21,6 +21,13 @@
         android:key="qs_tuner"
         android:title="@string/quick_settings" />
 
+    <ListPreference
+        android:key="qs_num_tile_columns"
+        android:title="@string/qs_num_columns_title"
+        android:entries="@array/qs_num_columns_entries"
+        android:entryValues="@array/qs_num_columns_values"
+        android:persistent="false" />
+
     <PreferenceScreen
         android:title="@string/status_bar" >
 

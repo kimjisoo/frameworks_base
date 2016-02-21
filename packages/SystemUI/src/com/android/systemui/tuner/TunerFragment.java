@@ -23,9 +23,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.ContentResolver;
 import android.database.ContentObserver;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -56,7 +58,7 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
     private static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
     private static final String STATUS_BAR_BATTERY_STYLE_HIDDEN = "4";
     private static final String STATUS_BAR_BATTERY_STYLE_TEXT = "6";
-
+    private static final String QS_NUM_TILE_COLUMNS = "qs_num_tile_columns";
     public static final String SETTING_SEEN_TUNER_WARNING = "seen_tuner_warning";
 
 /*    private final SettingObserver mSettingObserver = new SettingObserver();
@@ -65,6 +67,7 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
 */
     private ListPreference mStatusBarBattery;
     private ListPreference mStatusBarBatteryShowPercent;
+    private ListPreference mNumColumns;
 
     private int mbatteryStyle;
     private int mbatteryShowPercent;
@@ -119,6 +122,14 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
         mStatusBarBatteryShowPercent.setSummary(mStatusBarBatteryShowPercent.getEntry());
         mStatusBarBatteryShowPercent.setOnPreferenceChangeListener(this);
         enableStatusBarBatteryDependents(String.valueOf(mbatteryStyle));
+
+        mNumColumns = (ListPreference) findPreference(QS_NUM_TILE_COLUMNS);
+        int numColumns = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.QS_NUM_TILE_COLUMNS, getDefaultNumColums(),
+                UserHandle.USER_CURRENT);
+        mNumColumns.setValue(String.valueOf(numColumns));
+        updateNumColumnsSummary(numColumns);
+        mNumColumns.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -196,6 +207,12 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
             mStatusBarBatteryShowPercent.setSummary(
                     mStatusBarBatteryShowPercent.getEntries()[index]);
             return true;
+        } else if (preference == mNumColumns) {
+            int numColumns = Integer.valueOf((String) newValue);
+            Settings.Secure.putIntForUser(resolver, Settings.Secure.QS_NUM_TILE_COLUMNS,
+                    numColumns, UserHandle.USER_CURRENT);
+            updateNumColumnsSummary(numColumns);
+            return true;
         }
         return false;
      }
@@ -233,5 +250,24 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
         boolean enabled = !(value.equals(STATUS_BAR_BATTERY_STYLE_TEXT)
                 || value.equals(STATUS_BAR_BATTERY_STYLE_HIDDEN));
         mStatusBarBatteryShowPercent.setEnabled(enabled);
+    }
+
+    private void updateNumColumnsSummary(int numColumns) {
+        String prefix = (String) mNumColumns.getEntries()[mNumColumns.findIndexOfValue(String
+                .valueOf(numColumns))];
+        mNumColumns.setSummary(getActivity().getResources().getString(R.string.qs_num_columns_showing, prefix));
+    }
+
+    private int getDefaultNumColums() {
+        try {
+            Resources res = getActivity().getPackageManager()
+                    .getResourcesForApplication("com.android.systemui");
+            int val = res.getInteger(res.getIdentifier("quick_settings_num_columns", "integer",
+                    "com.android.systemui")); // better not be larger than 5, that's as high as the
+                                              // list goes atm
+            return Math.max(1, val);
+        } catch (Exception e) {
+            return 3;
+        }
     }
 }

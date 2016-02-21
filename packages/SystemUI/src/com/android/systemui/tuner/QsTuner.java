@@ -22,6 +22,8 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.util.Log;
@@ -52,6 +54,7 @@ import com.android.systemui.statusbar.phone.QSTileHost;
 import com.android.systemui.statusbar.policy.SecurityController;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class QsTuner extends Fragment implements Callback {
@@ -68,6 +71,12 @@ public class QsTuner extends Fragment implements Callback {
     private ScrollView mScrollRoot;
 
     private FrameLayout mAddTarget;
+
+    private View mSpacer;
+
+    public interface TopRowCallback {
+        void topRowChanged();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,13 +117,22 @@ public class QsTuner extends Fragment implements Callback {
             Bundle savedInstanceState) {
         mScrollRoot = (ScrollView) inflater.inflate(R.layout.tuner_qs, container, false);
 
+        mSpacer = mScrollRoot.findViewById(R.id.spacer);
+        setupSpacer();
+
         mQsPanel = new DraggableQsPanel(getContext());
-        mTileHost = new CustomHost(getContext());
+        mQsPanel.setTopRowCallback(new TopRowCallback() {
+            @Override
+            public void topRowChanged() {
+                    updateSpacer();
+            }
+        });
+        mTileHost = new CustomHost(getContext(), mQsPanel);
         mTileHost.setCallback(this);
         mQsPanel.setTiles(mTileHost.getTiles());
         mQsPanel.setHost(mTileHost);
         mQsPanel.refreshAllTiles();
-        ((ViewGroup) mScrollRoot.findViewById(R.id.all_details)).addView(mQsPanel, 0);
+        ((ViewGroup) mScrollRoot.findViewById(R.id.all_details)).addView(mQsPanel, 1);
 
         mDropTarget = (FrameLayout) mScrollRoot.findViewById(R.id.remove_target);
         setupDropTarget();
@@ -129,6 +147,29 @@ public class QsTuner extends Fragment implements Callback {
         super.onDestroyView();
     }
 
+    private void setupSpacer() {
+        new DragHelper(mSpacer, new DropListener() {
+            @Override
+            public void onDrop(DraggableTile sourceTile) {
+                Settings.System.putIntForUser(getContext().getContentResolver(),
+                        "num_top_rows", 1, UserHandle.USER_CURRENT);
+                updateSpacer();
+                mTileHost.updateTiles(sourceTile.mSpec);
+            }
+        });
+        updateSpacer();
+    }
+
+    private void updateSpacer() {
+        int cols = Settings.System.getIntForUser(getContext().getContentResolver(),
+                    "num_top_rows", 2, UserHandle.USER_CURRENT);
+        if (cols < 1) {
+            mSpacer.setVisibility(View.VISIBLE);
+        } else if (cols > 0) {
+            mSpacer.setVisibility(View.GONE);
+        }
+    }
+
     private void setupDropTarget() {
         QSTileView tileView = new QSTileView(getContext());
         QSTile.State state = new QSTile.State();
@@ -140,8 +181,9 @@ public class QsTuner extends Fragment implements Callback {
         mDropTarget.setVisibility(View.GONE);
         new DragHelper(tileView, new DropListener() {
             @Override
-            public void onDrop(String sourceText) {
-                mTileHost.remove(sourceText);
+            public void onDrop(DraggableTile sourceTile) {
+                mTileHost.remove(sourceTile);
+                mQsPanel.refreshAllTiles();
             }
         });
     }
@@ -186,6 +228,7 @@ public class QsTuner extends Fragment implements Callback {
     @Override
     public void onTilesChanged() {
         mQsPanel.setTiles(mTileHost.getTiles());
+        mQsPanel.refreshAllTiles();
     }
 
     private static int getLabelResource(String spec) {
@@ -200,14 +243,25 @@ public class QsTuner extends Fragment implements Callback {
         else if (spec.equals("location")) return R.string.quick_settings_location_label;
         else if (spec.equals("cast")) return R.string.quick_settings_cast_title;
         else if (spec.equals("hotspot")) return R.string.quick_settings_hotspot_label;
+        else if (spec.equals("usb_tether")) return R.string.quick_settings_usb_tether_label;
+        else if (spec.equals("nfc")) return R.string.quick_settings_nfc_label;
+        else if (spec.equals("sync")) return R.string.quick_settings_sync_label;
+        else if (spec.equals("timeout")) return R.string.quick_settings_timeout_label;
+        else if (spec.equals("battery_saver")) return R.string.quick_settings_battery_saver;
+        else if (spec.equals("expanded_desktop")) return R.string.quick_settings_expanded_desktop;
+        else if (spec.equals("caffeine")) return R.string.quick_settings_caffeine_label;
         return 0;
     }
 
     private static class CustomHost extends QSTileHost {
 
-        public CustomHost(Context context) {
+        DraggableQsPanel mPanel;
+
+        public CustomHost(Context context, DraggableQsPanel panel) {
             super(context, null, null, null, null, null, null, null, null, null,
                     null, null, new BlankSecurityController());
+
+            mPanel = panel;
         }
 
         @Override
@@ -215,10 +269,15 @@ public class QsTuner extends Fragment implements Callback {
             return new DraggableTile(this, tileSpec);
         }
 
+        protected DraggableQsPanel getPanel() {
+            return mPanel;
+        }
+
         public void replace(String oldTile, String newTile) {
             if (oldTile.equals(newTile)) {
                 return;
             }
+
             MetricsLogger.action(getContext(), MetricsLogger.TUNER_QS_REORDER, oldTile + ","
                     + newTile);
             List<String> order = new ArrayList<>(mTileSpecs);
@@ -232,10 +291,22 @@ public class QsTuner extends Fragment implements Callback {
             setTiles(order);
         }
 
-        public void remove(String tile) {
-            MetricsLogger.action(getContext(), MetricsLogger.TUNER_QS_REMOVE, tile);
+        public void remove(DraggableTile tile) {
+            String spec = tile.mSpec;
+            MetricsLogger.action(getContext(), MetricsLogger.TUNER_QS_REMOVE, spec);
             List<String> tiles = new ArrayList<>(mTileSpecs);
-            tiles.remove(tile);
+            tiles.remove(spec);
+            setTiles(tiles);
+        }
+
+        public void updateTiles(String newTile) {
+            replace(mTileSpecs.get(0), newTile);
+        }
+
+        public void add(String tile, int location) {
+            MetricsLogger.action(getContext(), MetricsLogger.TUNER_QS_ADD, tile);
+            List<String> tiles = new ArrayList<>(mTileSpecs);
+            tiles.add(location, tile);
             setTiles(tiles);
         }
 
@@ -247,8 +318,13 @@ public class QsTuner extends Fragment implements Callback {
         }
 
         public void reset() {
-            Secure.putStringForUser(getContext().getContentResolver(),
-                    TILES_SETTING, "default", ActivityManager.getCurrentUser());
+            Secure.putStringForUser(getContext().getContentResolver(), TILES_SETTING,
+                    "wifi,bt,dnd,cell,airplane,rotation,flashlight,location,cast",
+                    ActivityManager.getCurrentUser());
+            Settings.System.putIntForUser(getContext().getContentResolver(),
+                    "num_top_rows", 2, UserHandle.USER_CURRENT);
+            mPanel.mCallback.topRowChanged();
+            mPanel.refreshAllTiles();
         }
 
         private void setTiles(List<String> tiles) {
@@ -380,19 +456,13 @@ public class QsTuner extends Fragment implements Callback {
 
         protected DraggableTile(QSTile.Host host, String tileSpec) {
             super(host);
-            Log.d(TAG, "Creating tile " + tileSpec);
             mSpec = tileSpec;
         }
 
         @Override
         public QSTileView createTileView(Context context) {
-            mView = super.createTileView(context);
+            mView = new QSTileView(context);
             return mView;
-        }
-
-        @Override
-        public boolean supportsDualTargets() {
-            return "wifi".equals(mSpec) || "bt".equals(mSpec);
         }
 
         @Override
@@ -443,6 +513,13 @@ public class QsTuner extends Fragment implements Callback {
             else if (mSpec.equals("location")) return R.drawable.ic_signal_location_enable;
             else if (mSpec.equals("cast")) return R.drawable.ic_qs_cast_on;
             else if (mSpec.equals("hotspot")) return R.drawable.ic_hotspot_enable;
+            else if (mSpec.equals("usb_tether")) return R.drawable.ic_qs_usb_tether_off;
+            else if (mSpec.equals("nfc")) return R.drawable.ic_qs_nfc_on;
+            else if (mSpec.equals("sync")) return R.drawable.ic_qs_sync_on;
+            else if (mSpec.equals("timeout")) return R.drawable.ic_qs_screen_timeout_vector;
+            else if (mSpec.equals("battery_saver")) return R.drawable.ic_qs_battery_saver_on;
+            else if (mSpec.equals("expanded_desktop")) return R.drawable.ic_qs_expanded_desktop;
+            else if (mSpec.equals("caffeine")) return R.drawable.ic_qs_caffeine_on;
             return R.drawable.android;
         }
 
@@ -460,8 +537,8 @@ public class QsTuner extends Fragment implements Callback {
         }
 
         @Override
-        public void onDrop(String sourceText) {
-            ((CustomHost) mHost).replace(mSpec, sourceText);
+        public void onDrop(DraggableTile sourceTile) {
+            ((CustomHost) mHost).getPanel().replace(this, sourceTile);
         }
 
     }
@@ -490,8 +567,8 @@ public class QsTuner extends Fragment implements Callback {
                     break;
                 case DragEvent.ACTION_DROP:
                     stopDrag();
-                    String text = event.getClipData().getItemAt(0).getText().toString();
-                    mListener.onDrop(text);
+                    DraggableTile tile = (DraggableTile) event.getLocalState();
+                    mListener.onDrop(tile);
                     break;
             }
             return true;
@@ -500,13 +577,32 @@ public class QsTuner extends Fragment implements Callback {
     }
 
     public interface DropListener {
-        void onDrop(String sourceText);
+        void onDrop(DraggableTile sourceTile);
     }
 
     private class DraggableQsPanel extends QSPanel implements OnTouchListener {
+
+        private TopRowCallback mCallback;
+
         public DraggableQsPanel(Context context) {
             super(context);
             mBrightnessView.setVisibility(View.GONE);
+        }
+
+        public void setTopRowCallback(TopRowCallback callback) {
+            mCallback = callback;
+        }
+
+        @Override
+        public void setTiles(Collection<QSTile<?>> tiles) {
+            super.setTiles(tiles);
+        }
+
+        @Override
+        protected int getRowTop(int row) {
+            row = (mTopColumns == 0) ? row - 1 : row;
+            if (row <= 0) return 0;
+            return mLargeCellHeight - mDualTileUnderlap + (row - 1) * mCellHeight;
         }
 
         @Override
@@ -523,13 +619,52 @@ public class QsTuner extends Fragment implements Callback {
             }
         }
 
+        public void replace(DraggableTile oldTile, DraggableTile newTile) {
+
+            int oldR = -1, newR = -1, oldC = -1, newC = -1;
+
+            for (TileRecord r : mRecords) {
+                if (r.tile == oldTile) {
+                    oldR = r.row;
+                    oldC = r.col;
+                } else if (r.tile == newTile) {
+                    newR = r.row;
+                    newC = r.col;
+                }
+            }
+
+            if (oldR != -1 && newR != -1) {
+                int newTopColumns = Settings.System.getIntForUser(getContext().getContentResolver(),
+                        "num_top_rows", 2, UserHandle.USER_CURRENT);
+
+                if (newR == 0) {
+                    if (newTopColumns > 0) {
+                        newTopColumns--;
+                    }
+                }
+                if (oldR == 0) {
+                    if (newTopColumns < 3) {
+                        newTopColumns++;
+                    }
+                }
+
+                Settings.System.putIntForUser(getContext().getContentResolver(),
+                        "num_top_rows", newTopColumns, UserHandle.USER_CURRENT);
+
+                mCallback.topRowChanged();
+            }
+
+            ((CustomHost) mHost).replace(oldTile.mSpec, newTile.mSpec);
+        }
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    String tileSpec = (String) ((DraggableTile) v.getTag()).mSpec;
+                    DraggableTile tile = (DraggableTile) v.getTag();
+                    String tileSpec = (String) tile.mSpec;
                     ClipData data = ClipData.newPlainText(tileSpec, tileSpec);
-                    v.startDrag(data, new View.DragShadowBuilder(v), null, 0);
+                    v.startDrag(data, new View.DragShadowBuilder(v), tile, 0);
                     onStartDrag();
                     return true;
             }
