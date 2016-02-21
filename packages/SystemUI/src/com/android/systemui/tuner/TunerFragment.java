@@ -64,6 +64,7 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
     private static final String QUICK_PULLDOWN = "quick_pulldown";
     private static final String PREF_SMART_PULLDOWN = "smart_pulldown";
     private static final String QS_SHOW_BRIGHTNESS_SLIDER = "qs_show_brightness_slider";
+    private static final String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
 
     public static final String SETTING_SEEN_TUNER_WARNING = "seen_tuner_warning";
 
@@ -79,6 +80,7 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
     private ListPreference mSmartPulldown;
 
     private SwitchPreference mShowBrightnessSlider;
+    private SwitchPreference mStatusbarBrightnessControl;
 
     private int mbatteryStyle;
     private int mbatteryShowPercent;
@@ -161,6 +163,12 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
             Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER, 1, UserHandle.USER_CURRENT);
         mShowBrightnessSlider.setChecked(showBrightnessSlider == 1);
         mShowBrightnessSlider.setOnPreferenceChangeListener(this);
+
+        mStatusbarBrightnessControl = (SwitchPreference) findPreference(STATUS_BAR_BRIGHTNESS_CONTROL);
+        int statusbarBrightnessControl = Settings.System.getIntForUser(resolver,
+            Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0, UserHandle.USER_CURRENT);
+        mStatusbarBrightnessControl.setChecked(statusbarBrightnessControl == 1);
+        mStatusbarBrightnessControl.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -258,6 +266,10 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
         } else if (preference == mShowBrightnessSlider) {
             Settings.Secure.putIntForUser(resolver, Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER,
                     mShowBrightnessSlider.isChecked() ? 0 : 1, UserHandle.USER_CURRENT);
+            return true;
+        } else if (preference == mStatusbarBrightnessControl) {
+            Settings.System.putIntForUser(resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
+                    mStatusbarBrightnessControl.isChecked() ? 0 : 1, UserHandle.USER_CURRENT);
             return true;
         }
         return false;
