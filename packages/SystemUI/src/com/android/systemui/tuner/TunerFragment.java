@@ -326,6 +326,7 @@ public class TunerFragment extends PreferenceFragment implements OnPreferenceCha
             return Math.max(1, val);
         } catch (Exception e) {
             return 3;
+        }
     }
 
     private void updatePulldownSummary(int value) {
