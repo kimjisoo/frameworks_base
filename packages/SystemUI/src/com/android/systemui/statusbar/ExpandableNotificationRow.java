@@ -541,7 +541,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView {
     }
 
     public boolean isUserExpanded() {
-        return mUserExpanded;
+        return true;
     }
 
     /**
