@@ -3605,7 +3605,7 @@ public class AudioService extends IAudioService.Stub {
                     } else {
                         if (DEBUG_VOL)
                             Log.v(TAG, "getActiveStreamType: Forcing STREAM_RING b/c default");
-                        return AudioSystem.STREAM_RING;
+                        return AudioSystem.STREAM_MUSIC;
                 }
             } else if (isAfMusicActiveRecently(0)) {
                 if (DEBUG_VOL)
@@ -3642,7 +3642,7 @@ public class AudioService extends IAudioService.Stub {
                 } else {
                     if (DEBUG_VOL) Log.v(TAG,
                             "getActiveStreamType: using STREAM_NOTIFICATION as default");
-                    return AudioSystem.STREAM_NOTIFICATION;
+                    return AudioSystem.STREAM_MUSIC;
                 }
             }
             break;
