@@ -115,20 +115,24 @@ public class BluetoothTile extends QSTile<QSTile.BooleanState>  {
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_bluetooth_connecting);
                 state.contentDescription = mContext.getString(
                         R.string.accessibility_quick_settings_bluetooth_connecting);
-                state.label = mContext.getString(R.string.quick_settings_bluetooth_label);
+                state.label = mContext.getString(R.string.quick_settings_bluetooth_connecting);
             } else {
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_bluetooth_on);
                 state.contentDescription = mContext.getString(
                         R.string.accessibility_quick_settings_bluetooth_on);
+                state.label = mContext.getString(
+                        R.string.quick_settings_bluetooth_on);
             }
             if (TextUtils.isEmpty(state.label)) {
-                state.label = mContext.getString(R.string.quick_settings_bluetooth_label);
+                state.label = mContext.getString(
+                        R.string.accessibility_quick_settings_bluetooth_on);
             }
         } else {
             state.icon = ResourceIcon.get(R.drawable.ic_qs_bluetooth_off);
-            state.label = mContext.getString(R.string.quick_settings_bluetooth_label);
             state.contentDescription = mContext.getString(
                     R.string.accessibility_quick_settings_bluetooth_off);
+            state.label = mContext.getString(
+                    R.string.quick_settings_bluetooth_off);
         }
 
         String bluetoothName = state.label;

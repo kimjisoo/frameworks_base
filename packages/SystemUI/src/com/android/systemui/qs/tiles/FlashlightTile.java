@@ -72,7 +72,7 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.visible = mFlashlightController.isAvailable();
-        state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_label);
+        state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_off);
         if (arg instanceof UserBoolean) {
             boolean value = ((UserBoolean) arg).value;
             if (value == state.value) {
@@ -89,6 +89,10 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
                 ? R.string.accessibility_quick_settings_flashlight_on
                 : R.string.accessibility_quick_settings_flashlight_off;
         state.contentDescription = mContext.getString(onOrOffId);
+        int onOrOffLabel = state.value
+                ? R.string.quick_settings_flashlight_on
+                : R.string.quick_settings_flashlight_off;
+        state.label = mContext.getString(onOrOffLabel);
     }
 
     @Override

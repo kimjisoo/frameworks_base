@@ -167,7 +167,7 @@ public class CaffeineTile extends QSTile<QSTile.BooleanState> {
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_caffeine_on);
         } else {
-            state.label = mContext.getString(R.string.quick_settings_caffeine_label);
+            state.label = mContext.getString(R.string.quick_settings_caffeine_off);
             state.icon = ResourceIcon.get(R.drawable.ic_qs_caffeine_off);
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_caffeine_off);

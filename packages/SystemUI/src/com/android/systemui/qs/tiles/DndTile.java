@@ -156,7 +156,7 @@ public class DndTile extends QSTile<QSTile.BooleanState> {
                 break;
             default:
                 state.icon = TOTAL_SILENCE.equals(state.icon) ? mDisableTotalSilence : mDisable;
-                state.label = mContext.getString(R.string.quick_settings_dnd_label);
+                state.label = mContext.getString(R.string.quick_settings_dnd_off);
                 state.contentDescription =  mContext.getString(
                         R.string.accessibility_quick_settings_dnd_off);
                 break;

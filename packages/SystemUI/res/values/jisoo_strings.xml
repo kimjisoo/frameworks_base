@@ -156,4 +156,26 @@
     <string name="battery_saver_dismiss_title">Dismiss</string>
     <string name="battery_saver_notification_action_text_short">Turn off</string>
 
+    <!-- QS tile strings -->
+    <string name="quick_settings_ambient_display_off">AD off</string>
+    <string name="quick_settings_ambient_display_on">AD on</string>
+    <string name="quick_settings_battery_saver_on">Saver on</string>
+    <string name="quick_settings_battery_saver_off">Saver off</string>
+    <string name="quick_settings_bluetooth_connecting">Connecting</string>
+    <string name="quick_settings_bluetooth_on">BT on</string>
+    <string name="quick_settings_bluetooth_off">BT off</string>
+    <string name="quick_settings_sync_on">Sync on</string>
+    <string name="quick_settings_sync_off">Sync off</string>
+    <string name="quick_settings_hotspot_on">Hotspot on</string>
+    <string name="quick_settings_hotspot_off">Hotspot off</string>
+    <string name="quick_settings_usb_tether_on">Tether on</string>
+    <string name="quick_settings_usb_tether_off">Tether off</string>
+    <string name="quick_settings_wifi_on">Wi-Fi on</string>
+    <string name="quick_settings_wifi_off">Wi-Fi off</string>
+    <string name="quick_settings_wifi_not_connected">Not connected</string>
+    <string name="quick_settings_caffeine_off">Caffeine off</string>
+    <string name="quick_settings_flashlight_on">Torch on</string>
+    <string name="quick_settings_flashlight_off">Torch off</string>
+    <string name="quick_settings_dnd_off">DnD off</string>
+
 </resources>

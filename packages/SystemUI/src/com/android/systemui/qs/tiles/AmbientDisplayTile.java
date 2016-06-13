@@ -75,10 +75,14 @@ public class AmbientDisplayTile extends QSTile<QSTile.BooleanState> {
             state.icon = ResourceIcon.get(R.drawable.ic_qs_ambientdisplay_on);
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_ambient_display_on);
+            state.label =  mContext.getString(
+                    R.string.quick_settings_ambient_display_on);
         } else {
             state.icon = ResourceIcon.get(R.drawable.ic_qs_ambientdisplay_off);
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_ambient_display_off);
+            state.label =  mContext.getString(
+                    R.string.quick_settings_ambient_display_off);
         }
     }
 

@@ -113,10 +113,14 @@ public class UsbTetherTile extends QSTile<QSTile.BooleanState> {
             state.icon = ResourceIcon.get(R.drawable.ic_qs_usb_tether_on);
             state.contentDescription = mContext.getString(
                     R.string.accessibility_quick_settings_usb_tether_on);
+            state.label = mContext.getString(
+                    R.string.quick_settings_usb_tether_on);
         } else {
             state.icon = ResourceIcon.get(R.drawable.ic_qs_usb_tether_off);
             state.contentDescription = mContext.getString(
                     R.string.accessibility_quick_settings_usb_tether_off);
+            state.label = mContext.getString(
+                    R.string.quick_settings_usb_tether_off);
         }
     }
 
