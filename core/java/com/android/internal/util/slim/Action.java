@@ -27,6 +27,7 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.input.InputManager;
+import com.android.internal.logging.MetricsLogger;
 import android.media.AudioManager;
 import android.media.session.MediaSessionLegacyHelper;
 import android.media.ToneGenerator;
@@ -39,6 +40,7 @@ import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.MediaStore;
+import com.android.systemui.statusbar.policy.FlashlightController;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.IWindowManager;
@@ -149,20 +151,9 @@ public class Action {
                     barService.expandSettingsPanel();
                 } catch (RemoteException e) {}
             } else if (action.equals(ActionConstants.ACTION_TORCH)) {
-                try {
-                    CameraManager cameraManager = (CameraManager)
-                            context.getSystemService(Context.CAMERA_SERVICE);
-                    for (final String cameraId : cameraManager.getCameraIdList()) {
-                        CameraCharacteristics characteristics =
-                            cameraManager.getCameraCharacteristics(cameraId);
-                        int orient = characteristics.get(CameraCharacteristics.LENS_FACING);
-                        if (orient == CameraCharacteristics.LENS_FACING_BACK) {
-                            cameraManager.setTorchMode(cameraId, !sTorchEnabled);
-                            sTorchEnabled = !sTorchEnabled;
-                        }
-                    }
-                } catch (CameraAccessException e) {
-                }
+                MetricsLogger.action(mContext, getMetricsCategory(), !mState.value);
+                boolean newState = !mState.value;
+                mFlashlightController.setFlashlight(newState);
                 return;
             } else if (action.equals(ActionConstants.ACTION_SMART_PULLDOWN)) {
                 if (isKeyguardShowing && isKeyguardSecure) {
