@@ -33,6 +33,7 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.animation.OvershootInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -347,7 +348,8 @@ public class QSPanel extends ViewGroup {
     private void setAnimationTile(TileRecord r) {
         ObjectAnimator animTile = null;
         animTile = ObjectAnimator.ofFloat(r.tileView, "rotationY", 0f, 360f);
-        animTile.setDuration(1000);
+        animTile.setInterpolator(new OvershootInterpolator());
+        animTile.setDuration(1500);
         animTile.start();
     }
 
