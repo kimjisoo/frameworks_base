@@ -27,6 +27,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.MathUtils;
 import android.util.TypedValue;
@@ -104,6 +105,10 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
 
     private int mClockCollapsedSize;
     private int mClockExpandedSize;
+
+    private static boolean mTranslucentHeader;
+    private static int mTranslucencyPercentage;
+    private static StatusBarHeaderView mStatusBarHeaderView;
 
     /**
      * In collapsed QS, the clock and avatar are scaled down a bit post-layout to allow for a nice
@@ -194,6 +199,22 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         ((RippleDrawable) getBackground()).setForceSoftware(true);
         ((RippleDrawable) mSettingsButton.getBackground()).setForceSoftware(true);
         ((RippleDrawable) mSystemIconsSuperContainer.getBackground()).setForceSoftware(true);
+
+        mStatusBarHeaderView = this;
+        handleStatusBarHeaderViewBackround();
+    }
+
+    public static void handleStatusBarHeaderViewBackround() {
+        if (NotificationPanelView.mNotificationPanelView == null)
+            return;
+        boolean mKeyguardShowing = NotificationPanelView.mKeyguardShowing;
+        if (mStatusBarHeaderView == null)
+            return;
+        if (mKeyguardShowing) {
+            mStatusBarHeaderView.getBackground().setAlpha(255);
+        } else {
+            mStatusBarHeaderView.getBackground().setAlpha(mTranslucentHeader ? mTranslucencyPercentage : 255);
+        }
     }
 
     @Override
@@ -679,6 +700,13 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
             mTime.setScaleY(1f);
         }
         updateAmPmTranslation();
+    }
+
+    public static void updatePreferences(Context mContext) {
+        mTranslucentHeader = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.TRANSLUCENT_HEADER_PREFERENCE_KEY, 1) == 1);
+        mTranslucencyPercentage =  Settings.System.getInt(mContext.getContentResolver(), Settings.System.TRANSLUCENT_HEADER_PRECENTAGE_PREFERENCE_KEY, 70);
+        mTranslucencyPercentage = 255 - ((mTranslucencyPercentage * 255) / 100);
+        handleStatusBarHeaderViewBackround();
     }
 
     /**
