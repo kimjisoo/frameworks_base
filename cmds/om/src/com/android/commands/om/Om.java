@@ -64,8 +64,12 @@ public final class Om {
             return runEnableDisable(true);
         } else if ("disable".equals(op)) {
             return runEnableDisable(false);
+        } else if ("disable-all".equals(op)) {
+            return runDisableAll();
         } else if ("set-priority".equals(op)) {
             return runSetPriority();
+        } else if ("refresh".equals(op)) {
+            return runRefresh();
         } else if (op != null) {
             System.err.println("Error: unknown command '" + op + "'");
         }
@@ -189,18 +193,46 @@ public final class Om {
                     return 1;
             }
         }
+
+        int argc = 0;
         try {
             String packageName = nextArg();
+            ArrayList<String> packages = new ArrayList<>();
             if (packageName == null) {
-                System.err.println("Error: no package specified");
+                System.err.println("Error: no packages specified");
                 return 1;
             }
-            return mOm.setEnabled(packageName, enable, userId) ? 0 : 1;
+            while(packageName != null) {
+                argc++;
+                packages.add(packageName);
+                packageName = nextArg();
+            }
+            if(argc > 1) {
+                for(String pkg : packages) {
+                    boolean ret = mOm.setEnabled(pkg, enable, userId, true);
+                    if(!ret) {
+                        System.err.println("Error: Failed to " + ((enable) ? "enable ":"disable ") + pkg);
+                    }
+                }
+                return 0;
+            } else if(argc == 1) {
+                return mOm.setEnabled(packages.get(0), enable, userId, false) ? 0:1;
+            } else {
+                System.err.println("Error: should never reach here");
+                return 1;
+            }
         } catch (RemoteException e) {
             System.err.println(e.toString());
             System.err.println(OM_NOT_RUNNING_ERR);
-            return 1;
+        } finally {
+            try {
+                if(argc > 1) mOm.refresh(userId);
+            } catch (RemoteException e) {
+                System.err.println(e.toString());
+                System.err.println(OM_NOT_RUNNING_ERR);
+            }
         }
+        return 0;
     }
 
     private int runSetPriority() {
@@ -247,7 +279,80 @@ public final class Om {
         }
     }
 
+    private int runDisableAll() {
+        int userId = UserHandle.USER_OWNER;
+        try {
+            String opt;
+            while ((opt = nextOption()) != null) {
+                switch (opt) {
+                    case "--user":
+                        String optionData = nextOptionData();
+                        if (optionData == null || !isNumber(optionData)) {
+                            System.err.println("Error: no USER_ID specified");
+                            showUsage();
+                            return 1;
+                        }
+                        userId = Integer.parseInt(optionData);
+                        break;
+                    default:
+                        System.err.println("Error: Unknown option: " + opt);
+                        return 1;
+                }
+            }
 
+            Map<String, List<OverlayInfo>> targetsAndOverlays = mOm.getAllOverlays(userId);
+
+            for (Entry<String, List<OverlayInfo>> targetEntry : targetsAndOverlays.entrySet()) {
+                for (OverlayInfo oi : targetEntry.getValue()) {
+                    boolean worked = mOm.setEnabled(oi.packageName, false, userId, true);
+                    if(!worked) {
+                        System.err.println("Failed to disable " + oi.packageName);
+                    }
+                }
+            }
+        } catch (RemoteException e) {
+            System.err.println(e.toString());
+            System.err.println(OM_NOT_RUNNING_ERR);
+        } finally {
+            try {
+                mOm.refresh(userId);
+            } catch (RemoteException e) {
+                System.err.println(e.toString());
+                System.err.println(OM_NOT_RUNNING_ERR);
+            }
+        }
+        return 0;
+    }
+
+    private int runRefresh() {
+        int userId = UserHandle.USER_OWNER;
+        int ret = 1;
+        try {
+            String opt;
+            while ((opt = nextOption()) != null) {
+                switch (opt) {
+                    case "--user":
+                        String optionData = nextOptionData();
+                        if (optionData == null || !isNumber(optionData)) {
+                            System.err.println("Error: no USER_ID specified");
+                            showUsage();
+                            return 1;
+                        }
+                        userId = Integer.parseInt(optionData);
+                        break;
+                    default:
+                        System.err.println("Error: Unknown option: " + opt);
+                        return 1;
+                }
+            }
+            mOm.refresh(userId);
+            ret=0;
+        } catch(Exception x) {
+            x.printStackTrace();
+            ret=1;
+        }
+        return ret;
+    }
 
     private String nextOption() {
         if (mNextArg >= mArgs.length) {
@@ -308,6 +413,8 @@ public final class Om {
         System.err.println("usage: om list [--user USER_ID] [PACKAGE [PACKAGE [...]]]");
         System.err.println("       om enable [--user USER_ID] PACKAGE");
         System.err.println("       om disable [--user USER_ID] PACKAGE");
+        System.err.println("       om disable-all [--user USER_ID]");
+        System.err.println("       om refresh [--user USER_ID]");
         System.err.println("       om set-priority [--user USER_ID] PACKAGE PARENT|lowest|highest");
         System.err.println("");
         System.err.println("om list: print all overlay packages in priority order;");
@@ -318,6 +425,9 @@ public final class Om {
         System.err.println("om enable PACKAGE: enable overlay package PACKAGE");
         System.err.println("");
         System.err.println("om disable PACKAGE: disable overlay package PACKAGE");
+        System.err.println("om disable-all: disables all overlay packages");
+        System.err.println("");
+        System.err.println("om refresh: refreshes all overlay packages");
         System.err.println("");
         System.err.println("om set-priority PACKAGE PARENT: change the priority of the overlay");
         System.err.println("         PACKAGE to be just higher than the priority of PACKAGE_PARENT");
