@@ -442,16 +442,16 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
         // Reset mIconResizeFactor
         mIconResizeFactor = 1.0f;
         // Check the size set from the user and set resize values if needed
-        float diff = PieView.PIE_ICON_START_SIZE_FACTOR -
-                Settings.System.getFloatForUser(resolver,
-                        Settings.System.PIE_SIZE, PieView.PIE_CONTROL_SIZE_DEFAULT,
-                        UserHandle.USER_CURRENT);
-        if (diff > 0.0f) {
-            mIconResize = true;
-            mIconResizeFactor = 1.0f - diff;
-        } else {
+        //float diff = PieView.PIE_ICON_START_SIZE_FACTOR -
+                //Settings.System.getFloatForUser(resolver,
+                        //Settings.System.PIE_SIZE, PieView.PIE_CONTROL_SIZE_DEFAULT,
+                        //UserHandle.USER_CURRENT);
+        //if (diff > 0.0f) {
+            //mIconResize = true;
+            //mIconResizeFactor = 1.0f - diff;
+        //} else {
             mIconResize = false;
-        }
+        //}
 
         // Prepare IME back icon
         mBackAltIcon = mContext.getResources().getDrawable(R.drawable.ic_sysbar_back_ime);
