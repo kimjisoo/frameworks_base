@@ -46,22 +46,28 @@ import com.android.systemui.R;
 import java.util.ArrayList;
 
 public class ScreenPinningRequest implements View.OnClickListener {
+    public interface Callbacks {
+        public void onStartScreenPinning();
+    }
+    
     private final Context mContext;
 
     private final AccessibilityManager mAccessibilityService;
     private final WindowManager mWindowManager;
 
     private RequestWindowView mRequestWindow;
+    private Callbacks mCallback;
 
     // Id of task to be pinned or locked.
     private int taskId;
 
-    public ScreenPinningRequest(Context context) {
+    public ScreenPinningRequest(Context context, Callbacks callback) {
         mContext = context;
         mAccessibilityService = (AccessibilityManager)
                 mContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
         mWindowManager = (WindowManager)
                 mContext.getSystemService(Context.WINDOW_SERVICE);
+        mCallback = callback;
     }
 
     public void clearPrompt() {
@@ -118,6 +124,7 @@ public class ScreenPinningRequest implements View.OnClickListener {
         if (v.getId() == R.id.screen_pinning_ok_button || mRequestWindow == v) {
             try {
                 ActivityManagerNative.getDefault().startSystemLockTaskMode(taskId);
+                mCallback.onStartScreenPinning();
             } catch (RemoteException e) {}
         }
         clearPrompt();
