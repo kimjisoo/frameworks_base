@@ -28,6 +28,8 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.service.quicksettings.TileService;
+import com.android.systemui.Prefs;
+import com.android.systemui.Prefs.Key;
 import android.widget.Button;
 
 import com.android.systemui.R;
@@ -36,6 +38,7 @@ import com.android.systemui.qs.QSTile.DrawableIcon;
 import com.android.systemui.qs.QSTile.State;
 import com.android.systemui.qs.external.CustomTile;
 import com.android.systemui.statusbar.phone.QSTileHost;
+import com.android.systemui.tuner.TunerService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,8 +60,10 @@ public class TileQueryHelper {
     }
 
     private void addSystemTiles(final QSTileHost host) {
+        boolean hasColorMod = Prefs.getBoolean(host.getContext(), Key.QS_NIGHT_ADDED, false)
+                && TunerService.isTunerEnabled(host.getContext());
         String possible = mContext.getString(R.string.quick_settings_tiles_default)
-                + ",hotspot,inversion,saver,work,cast,night";
+                + ",hotspot,inversion,saver,work,cast" + (hasColorMod ? ",night" : "");
         String[] possibleTiles = possible.split(",");
         final Handler qsHandler = new Handler(host.getLooper());
         final Handler mainHandler = new Handler(Looper.getMainLooper());
