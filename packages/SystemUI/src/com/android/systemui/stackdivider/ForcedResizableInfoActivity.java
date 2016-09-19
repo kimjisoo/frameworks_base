@@ -48,8 +48,8 @@ public class ForcedResizableInfoActivity extends Activity implements OnTouchList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forced_resizable_activity);
         TextView tv = (TextView) findViewById(com.android.internal.R.id.message);
-        tv.setText(R.string.dock_forced_resizable);
-        getWindow().setTitle(getString(R.string.dock_forced_resizable));
+//        tv.setText(R.string.dock_forced_resizable);
+//        getWindow().setTitle(getString(R.string.dock_forced_resizable));
         getWindow().getDecorView().setOnTouchListener(this);
     }
 
