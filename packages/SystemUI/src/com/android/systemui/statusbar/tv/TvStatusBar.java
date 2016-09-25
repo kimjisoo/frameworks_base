@@ -28,6 +28,7 @@ import com.android.systemui.SystemUI;
 import com.android.systemui.pip.tv.PipManager;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.CommandQueue.Callbacks;
+import com.android.systemui.statusbar.policy.NetworkController;
 
 import java.util.ArrayList;
 
@@ -59,5 +60,4 @@ public class TvStatusBar extends SystemUI implements Callbacks {
             // If the system process isn't there we're doomed anyway.
         }
     }
-
 }

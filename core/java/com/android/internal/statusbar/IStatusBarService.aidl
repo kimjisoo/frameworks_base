@@ -79,4 +79,5 @@ interface IStatusBarService
     void handleSystemKey(in int key);
     void setAutoRotate(boolean enabled);
     void toggleCameraFlash();
+    void toggleOrientationListener(boolean enable);
 }

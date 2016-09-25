@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2017 RR
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <!-- Pie colors -->
+    <color name="pie_foreground">#ff8a8a8a</color>
+    <color name="pie_background">#ffffffff</color>
+    <color name="pie_icon">#4dffffff</color>
+    <color name="pie_line">#ffffff</color>
+    <color name="pie_selected">#ff000000</color>
+    <color name="pie_back_button">#ff8a8a8a</color>
+    <color name="pie_home_button">#ff8a8a8a</color>
+    <color name="pie_recent_button">#ff8a8a8a</color>
+    <color name="pie_screen_off_button">#ff8a8a8a</color>
+    <color name="pie_background_circle">#33000000</color>
+    <color name="pie_dark_background">#212121</color>
+    <color name="pie_dark_snap_point">#4a4a4a</color>
+    <color name="pie_battery">#76c124</color>
+    <color name="pie_battery_med">#ff3d00</color>
+    <color name="pie_battery_low">#f90028</color>
+    <color name="pie_shader_start">#FF4d4d4d</color>
+    <color name="pie_shader_end">#FF212121</color>
+
+    <color name="system_primary_color">@*android:color/primary_material_light</color>
+    <color name="system_accent_color">@*android:color/material_deep_teal_700</color>
+
+</resources>

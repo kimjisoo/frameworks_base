@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2012-2017 The Dirty Unicorns Project
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <!-- Pie controls dimensions -->
+    <dimen name="pie_line_length">142dp</dimen>
+    <dimen name="pie_line_width">1dp</dimen>
+    <dimen name="pie_line_offset">9dp</dimen>
+    <dimen name="pie_line_offset_land">60dp</dimen>
+    <dimen name="pie_line_offset_side">386dp</dimen>
+    <dimen name="pie_land_offset">60dp</dimen>
+    <dimen name="pie_land_offset_y">50dp</dimen>
+    <dimen name="pie_clock_size">64sp</dimen>
+    <dimen name="pie_clock_offset">130dp</dimen>
+    <dimen name="pie_status_size">13sp</dimen>
+    <dimen name="pie_date_offset">107.6dp</dimen>
+    <dimen name="pie_battery_offset">20dp</dimen>
+    <dimen name="pie_battery_offset_side">-370dp</dimen>
+    <dimen name="pie_snap_radius">31dp</dimen>
+    <dimen name="pie_snap_offset">15dp</dimen>
+    <dimen name="pie_item_size">20dp</dimen>
+    <dimen name="pie_icon_size">32dp</dimen>
+    <dimen name="pie_icon_padding">16dp</dimen>
+    <dimen name="pie_icon_offset">3dp</dimen>
+    <dimen name="pie_icon_offset_side">400dp</dimen>
+    <dimen name="pie_panel_padding">20dp</dimen>
+    <dimen name="pie_outer_circle_radius">107dp</dimen>
+    <dimen name="pie_outer_circle_thickness">46dp</dimen>
+    <dimen name="pie_inner_circle_radius">45dp</dimen>
+    <dimen name="pie_not_size">24dp</dimen>
+    <dimen name="pie_not_radius">19dp</dimen>
+    <dimen name="pie_not_offset">87.7dp</dimen>
+    <dimen name="pie_not_offsetx">62dp</dimen>
+    <dimen name="pie_elevation">8dp</dimen>
+    <dimen name="pie_battery_circle_radius">47dp</dimen>
+    <dimen name="pie_battery_width">3.5sp</dimen>
+    <dimen name="pie_shader_width">1dp</dimen>
+    <dimen name="pie_settings_offset">55dp</dimen>
+    <dimen name="pie_settings_offset_land">210dp</dimen>
+    <dimen name="pie_status_item_size">16dp</dimen>
+    <dimen name="pie_status_offset">15dp</dimen>
+    <dimen name="pie_status_text_top_margin">10dp</dimen>
+    <dimen name="pie_status_text_top_margin_land">9dp</dimen>
+
+</resources>
