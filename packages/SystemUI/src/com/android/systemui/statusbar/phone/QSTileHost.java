@@ -55,6 +55,7 @@ import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.SyncTile;
+import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
 import com.android.systemui.statusbar.policy.BatteryController;
@@ -448,6 +449,7 @@ public class QSTileHost implements QSTile.Host, Tunable {
         else if (tileSpec.equals("saver")) return new DataSaverTile(this);
         else if (tileSpec.equals("sync")) return new SyncTile(this);
         else if (tileSpec.equals("caffeine")) return new CaffeineTile(this);
+        else if (tileSpec.equals("usb_tether")) return new UsbTetherTile(this);
         else if (tileSpec.equals(NightModeTile.NIGHT_MODE_SPEC))
             return new NightModeTile(this);
         // Intent tiles.
