@@ -132,8 +132,8 @@ public class ForcedResizableInfoActivityController {
         if (SELF_PACKAGE_NAME.equals(packageName)) {
             return true;
         }
-        boolean debounce = mPackagesShownInSession.contains(packageName);
-        mPackagesShownInSession.add(packageName);
-        return debounce;
+//        boolean debounce = mPackagesShownInSession.contains(packageName);
+//        mPackagesShownInSession.add(packageName);
+        return true;
     }
 }
