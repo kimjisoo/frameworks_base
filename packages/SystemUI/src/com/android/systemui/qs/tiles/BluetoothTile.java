@@ -132,11 +132,12 @@ public class BluetoothTile extends QSTile<QSTile.BooleanState>  {
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_bluetooth_connecting);
                 state.contentDescription = mContext.getString(
                         R.string.accessibility_quick_settings_bluetooth_connecting);
-                state.label = mContext.getString(R.string.quick_settings_bluetooth_label);
+                state.label = mContext.getString(R.string.quick_settings_bluetooth_connecting);
                 state.minimalContentDescription = state.minimalContentDescription + ","
                         + state.contentDescription;
             } else {
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_bluetooth_on);
+                state.label = mContext.getString(R.string.quick_settings_bluetooth_not_connected);
                 state.contentDescription = mContext.getString(
                         R.string.accessibility_quick_settings_bluetooth_on) + ","
                         + mContext.getString(R.string.accessibility_not_connected);
@@ -148,7 +149,7 @@ public class BluetoothTile extends QSTile<QSTile.BooleanState>  {
             }
         } else {
             state.icon = ResourceIcon.get(R.drawable.ic_qs_bluetooth_off);
-            state.label = mContext.getString(R.string.quick_settings_bluetooth_label);
+            state.label = mContext.getString(R.string.quick_settings_bluetooth_off);
             state.contentDescription = mContext.getString(
                     R.string.accessibility_quick_settings_bluetooth_off);
         }

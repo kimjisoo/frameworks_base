@@ -41,4 +41,26 @@
     <string name="accessibility_quick_settings_usb_tether_changed_on">USB tethering turned on</string>
     <string name="quick_settings_usb_tether_label">USB tethering</string>
 
+    <!-- QS tile strings -->
+    <string name="quick_settings_airplane_mode_on">Airplane on</string>
+    <string name="quick_settings_airplane_mode_off">Airplane off</string>
+    <string name="quick_settings_bluetooth_off">BT off</string>
+    <string name="quick_settings_bluetooth_connecting">Connecting</string>
+    <string name="quick_settings_bluetooth_not_connected">Not connected</string>
+    <string name="quick_settings_caffeine_off">Caffeine off</string>
+    <string name="quick_settings_dnd_off">DnD off</string>
+    <string name="quick_settings_flashlight_on">Torch on</string>
+    <string name="quick_settings_flashlight_off">Torch off</string>
+    <string name="quick_settings_hotspot_on">Hotspot on</string>
+    <string name="quick_settings_hotspot_off">Hotspot off</string>
+    <string name="quick_settings_location_on">Location on</string>
+    <string name="quick_settings_location_off">Location off</string>
+    <string name="quick_settings_sync_on">Sync on</string>
+    <string name="quick_settings_sync_off">Sync off</string>
+    <string name="quick_settings_usb_tether_on">Tether on</string>
+    <string name="quick_settings_usb_tether_off">Tether off</string>
+    <string name="quick_settings_wifi_off">Wi-Fi off</string>
+    <string name="quick_settings_wifi_not_connected">Not connected</string>
+    <string name="quick_settings_wifi_unavailable">Unavailable</string>
+
 </resources>

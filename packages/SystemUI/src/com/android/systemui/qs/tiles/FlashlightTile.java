@@ -100,7 +100,7 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_label);
+        state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_off);
         if (!mFlashlightController.isAvailable()) {
             Drawable icon = mHost.getContext().getDrawable(R.drawable.ic_signal_flashlight_disable)
                     .mutate();
@@ -120,8 +120,10 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
                 return;
             }
             state.value = value;
+            state.label = mContext.getString(R.string.quick_settings_flashlight_off);
         } else {
             state.value = mFlashlightController.isEnabled();
+            state.label = mContext.getString(R.string.quick_settings_flashlight_on);
         }
         final AnimationIcon icon = state.value ? mEnable : mDisable;
         state.icon = icon;
