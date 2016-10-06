@@ -123,6 +123,14 @@ public class HotspotTile extends QSTile<QSTile.AirplaneBooleanState> {
             state.value = mController.isHotspotEnabled();
         }
         state.icon = state.value ? mEnable : mDisable;
+
+        final boolean enabled = mController.isHotspotEnabled();
+        if (enabled) {
+             state.label = mContext.getString(R.string.quick_settings_hotspot_on);
+        } else {
+             state.label = mContext.getString(R.string.quick_settings_hotspot_off);
+        }
+
         boolean wasAirplane = state.isAirplaneMode;
         state.isAirplaneMode = mAirplaneMode.getValue() != 0;
         if (state.isAirplaneMode) {

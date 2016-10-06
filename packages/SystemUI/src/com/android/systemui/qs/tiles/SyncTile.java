@@ -67,12 +67,10 @@ public class SyncTile extends QSTile<QSTile.BooleanState> {
         state.label = mContext.getString(R.string.quick_settings_sync_label);
         if (state.value) {
             state.icon = ResourceIcon.get(R.drawable.ic_qs_sync_on);
-            state.label =  mContext.getString(
-                    R.string.accessibility_quick_settings_sync_on);
+            state.label = mContext.getString(R.string.quick_settings_sync_on);
         } else {
             state.icon = ResourceIcon.get(R.drawable.ic_qs_sync_off);
-            state.label =  mContext.getString(
-                    R.string.accessibility_quick_settings_sync_off);
+            state.label = mContext.getString(R.string.quick_settings_sync_off);
         }
     }
 
