@@ -3557,7 +3557,6 @@ public final class Settings {
         /** @hide */
         public static final Validator POINTER_SPEED_VALIDATOR =
                 new InclusiveFloatRangeValidator(-7, 7);
-   
         /**
          * XOSP Blur personalization settings
          * @hide
@@ -3597,6 +3596,12 @@ public final class Settings {
          * @hide
          */
         public static final String POWER_MENU_ANIMATIONS = "power_menu_animations";
+
+        /**
+         * Alternative recent apps integration using OmniSwitch
+         * @hide
+         */
+        public static final String RECENTS_USE_OMNISWITCH = "recents_use_omniswitch";
 
         /**
          * I am the lolrus.
