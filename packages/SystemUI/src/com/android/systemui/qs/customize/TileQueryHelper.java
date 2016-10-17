@@ -60,8 +60,7 @@ public class TileQueryHelper {
     }
 
     private void addSystemTiles(final QSTileHost host) {
-        boolean hasColorMod = Prefs.getBoolean(host.getContext(), Key.QS_NIGHT_ADDED, false)
-                && TunerService.isTunerEnabled(host.getContext());
+        boolean hasColorMod = Prefs.getBoolean(host.getContext(), Key.QS_NIGHT_ADDED, false);
         String possible = mContext.getString(R.string.quick_settings_tiles_default)
                 + ",hotspot,inversion,saver,work,cast,sync,caffeine,usb_tether" + (hasColorMod ? ",night" : "");
         String[] possibleTiles = possible.split(",");
