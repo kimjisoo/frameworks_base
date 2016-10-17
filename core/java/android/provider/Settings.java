@@ -6508,6 +6508,57 @@ public final class Settings {
                 "camera_double_twist_to_flip_enabled";
 
         /**
+         * Status bar battery %
+         * 0: Hide the battery percentage
+         * 1: Display the battery percentage inside the icon
+         * 2: Display the battery percentage next to the icon
+         * @hide
+         */
+        public static final String STATUS_BAR_SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
+
+        /**
+         * Display style of the status bar battery information
+         * 0: Display the battery an icon in portrait mode
+         * 2: Display the battery as a circle
+         * 4: Hide the battery status information
+         * 5: Display the battery an icon in landscape mode
+         * 6: Display the battery as plain text
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
+
+        /**
+         * Whether to sync the battery tile stile with the statusbar battery icon style
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_STYLE_TILE = "status_bar_battery_style_tile";
+
+        /**
+         * Battery icon color while charging
+         *
+         * @hide
+         */
+        public static final String STATUS_BAR_CHARGE_COLOR = "status_bar_charge_color";
+
+        /**
+         * Whether to force percentage text out of the battery icon while charging
+         *
+         * @hide
+         */
+        public static final String FORCE_CHARGE_BATTERY_TEXT = "force_charge_battery_text";
+
+        /**
+         * Charging symbol near battery text percentage
+         * 0: no symbol
+         * 1: flash symbol
+         * 2: tilde symbol
+         * default: 0
+         * @hide
+         */
+        public static final String TEXT_CHARGING_SYMBOL = "text_charging_symbol";
+
+        /**
          * Control whether Night display is currently activated.
          * @hide
          */
@@ -6755,7 +6806,10 @@ public final class Settings {
             DOZE_PULSE_ON_PICK_UP,
             DOZE_PULSE_ON_DOUBLE_TAP,
             NFC_PAYMENT_DEFAULT_COMPONENT,
-            ADVANCED_REBOOT
+            ADVANCED_REBOOT,
+            STATUS_BAR_SHOW_BATTERY_PERCENT,
+            STATUS_BAR_BATTERY_STYLE,
+            STATUS_BAR_BATTERY_STYLE_TILE
         };
 
         /**
