@@ -78,7 +78,12 @@ public class NightModeTile extends QSTile<QSTile.State> implements NightModeCont
         boolean enabled = mNightModeController.isEnabled();
         state.icon = ResourceIcon.get(enabled ? R.drawable.ic_night_mode
                 : R.drawable.ic_night_mode_disabled);
-        state.label = mContext.getString(R.string.night_mode);
+        if (enabled) {
+             state.label = mContext.getString(R.string.quick_settings_night_on);
+        } else {
+             state.label = mContext.getString(R.string.quick_settings_night_off);
+        }
+
         state.contentDescription = mContext.getString(R.string.night_mode);
     }
 
