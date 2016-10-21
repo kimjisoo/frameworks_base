@@ -164,16 +164,12 @@ public class RecentsViewTouchHandler {
                 && mDividerSnapAlgorithm.isSplitScreenFeasible()) {
             Recents.logDockAttempt(mRv.getContext(), event.task.getTopComponent(),
                     event.task.resizeMode);
-            if (!event.task.isDockable) {
-                EventBus.getDefault().send(new ShowIncompatibleAppOverlayEvent());
-            } else {
                 // Add the dock state drop targets (these take priority)
                 TaskStack.DockState[] dockStates = getDockStatesForCurrentOrientation();
                 for (TaskStack.DockState dockState : dockStates) {
                     registerDropTargetForCurrentDrag(dockState);
                     dockState.update(mRv.getContext());
                     mVisibleDockStates.add(dockState);
-                }
             }
         }
 
@@ -183,9 +179,6 @@ public class RecentsViewTouchHandler {
     }
 
     public final void onBusEvent(DragEndEvent event) {
-        if (!mDragTask.isDockable) {
-            EventBus.getDefault().send(new HideIncompatibleAppOverlayEvent());
-        }
         mDragRequested = false;
         mDragTask = null;
         mTaskView = null;

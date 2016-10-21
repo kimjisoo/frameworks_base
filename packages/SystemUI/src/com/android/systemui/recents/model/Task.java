@@ -346,9 +346,6 @@ public class Task {
         if (isAffiliatedTask()) {
             writer.print(" "); writer.print("affTaskId=" + affiliationTaskId);
         }
-        if (!isDockable) {
-            writer.print(" dockable=N");
-        }
         if (isLaunchTarget) {
             writer.print(" launchTarget=Y");
         }

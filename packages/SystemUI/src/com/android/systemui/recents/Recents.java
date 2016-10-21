@@ -429,7 +429,6 @@ public class Recents extends SystemUI
                 SystemServicesProxy.isHomeStack(runningTask.stackId);
         if (runningTask != null && !isRunningTaskInHomeStack && !screenPinningActive) {
             logDockAttempt(mContext, runningTask.topActivity, runningTask.resizeMode);
-            if (runningTask.isDockable) {
                 if (metricsDockAction != -1) {
                     MetricsLogger.action(mContext, metricsDockAction,
                             runningTask.topActivity.flattenToShortString());
@@ -454,11 +453,6 @@ public class Recents extends SystemUI
                 }
                 mDraggingInRecentsCurrentUser = currentUser;
                 return true;
-            } else {
-                Toast.makeText(mContext, R.string.recents_incompatible_app_message,
-                        Toast.LENGTH_SHORT).show();
-                return false;
-            }
         } else {
             return false;
         }
