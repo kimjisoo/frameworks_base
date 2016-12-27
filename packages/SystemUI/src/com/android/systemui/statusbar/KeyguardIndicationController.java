@@ -171,9 +171,7 @@ public class KeyguardIndicationController {
 
             } else if (mPowerPluggedIn) {
                 String indication = computePowerIndication();
-                if (DEBUG_CHARGING_SPEED) {
-                    indication += ",  " + (mChargingWattage / 1000) + " mW";
-                }
+                indication += ",  " + (mChargingWattage / 1000) + " mW";
                 mTextView.switchIndication(indication);
                 mTextView.setTextColor(Color.WHITE);
 
