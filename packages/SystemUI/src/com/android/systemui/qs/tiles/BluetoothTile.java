@@ -104,7 +104,6 @@ public class BluetoothTile extends QSTile<QSTile.BooleanState>  {
                 }
             showDetail(true);
             }
-        }
     }
 
     @Override
