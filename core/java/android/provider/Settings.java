@@ -4067,6 +4067,11 @@ public final class Settings {
         public static final String PIXEL_NAV_ANIMATION = "pixel_nav_animation";
 
         /**
+         * @hide
+         */
+        public static final String QS_STYLE_DARK = "qs_style_dark";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4227,6 +4232,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_ROWS_LANDSCAPE);
             PRIVATE_SETTINGS.add(QS_COLUMNS_PORTRAIT);
             PRIVATE_SETTINGS.add(QS_COLUMNS_LANDSCAPE);
+            PRIVATE_SETTINGS.add(QS_STYLE_DARK);
         }
 
         /**
