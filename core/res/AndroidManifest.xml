@@ -556,6 +556,7 @@
         android:name="com.android.server.policy.PhoneWindowManager.ACTION_TORCH_OFF" />
 
     <protected-broadcast android:name="projekt.substratum.APP_CRASHED" />
+    <protected-broadcast android:name="com.android.systemui.action.RESTART_THEME" />
 
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
