@@ -68,4 +68,6 @@
     <string name="global_action_restart_recovery">Go to recovery</string>
     <string name="global_action_restart_bootloader">Go to bootloader</string>
     <string name="global_action_screenshot_label">Screenshot</string>
+
+    <string name="recents_app_killed">App stopped</string>
 </resources>
