@@ -26,6 +26,7 @@ import static com.android.internal.os.ZygoteConnectionConstants.CONNECTION_TIMEO
 import static com.android.internal.os.ZygoteConnectionConstants.MAX_ZYGOTE_ARGC;
 import static com.android.internal.os.ZygoteConnectionConstants.WRAPPED_PID_TIMEOUT_MILLIS;
 
+import android.graphics.Typeface;
 import android.net.Credentials;
 import android.net.LocalSocket;
 import android.os.FactoryTest;
@@ -190,6 +191,10 @@ class ZygoteConnection {
                 throw new IllegalStateException("Unable to set up pipe for invoke-with", errnoEx);
             }
         }
+
+        if (parsedArgs.refreshTheme) {
+            Typeface.recreateDefaults();
+         }
 
         /**
          * In order to avoid leaking descriptors to the Zygote child,
@@ -402,6 +407,9 @@ class ZygoteConnection {
          */
         String appDataDir;
 
+        /** from --refresh_theme */
+        boolean refreshTheme;
+
         /**
          * Whether to preload a package, with the package path in the remainingArgs.
          */
@@ -576,6 +584,8 @@ class ZygoteConnection {
                     instructionSet = arg.substring(arg.indexOf('=') + 1);
                 } else if (arg.startsWith("--app-data-dir=")) {
                     appDataDir = arg.substring(arg.indexOf('=') + 1);
+                } else if (arg.equals("--refresh_theme")) {
+                    refreshTheme = true;
                 } else if (arg.equals("--preload-package")) {
                     preloadPackage = args[++curArg];
                     preloadPackageLibs = args[++curArg];
