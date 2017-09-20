@@ -2251,6 +2251,9 @@ message MetricsEvent {
     QS_SYNC = 412;
     QS_TETHER = 413;
 
+    // Tweaks
+    TWEAKS = 414;
+
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
   }
