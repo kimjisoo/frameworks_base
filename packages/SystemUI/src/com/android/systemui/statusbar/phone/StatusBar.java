@@ -1,3 +1,5 @@
+
+
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *
@@ -4636,6 +4638,10 @@ public class StatusBar extends SystemUI implements DemoMode,
         mKeyguardIndicationController.showTransientIndication(R.string.phone_hint);
     }
 
+    public void onCustomHintStarted() {
+        mKeyguardIndicationController.showTransientIndication(R.string.custom_hint);
+    }
+
     public void onTrackingStopped(boolean expand) {
         if (mState == StatusBarState.KEYGUARD || mState == StatusBarState.SHADE_LOCKED) {
             if (!expand && !mUnlockMethodCache.canSkipBouncer()) {
@@ -5036,7 +5042,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             return;
         }
         if (!mNotificationPanel.canCameraGestureBeLaunched(
-                mStatusBarKeyguardViewManager.isShowing() && mExpandedVisible)) {
+                mStatusBarKeyguardViewManager.isShowing() && mExpandedVisible, source)) {
             return;
         }
         if (!mDeviceInteractive) {
@@ -5067,18 +5073,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     }
 
-    boolean isCameraAllowedByAdmin() {
-        if (mDevicePolicyManager.getCameraDisabled(null, mCurrentUserId)) {
-            return false;
-        } else if (isKeyguardShowing() && isKeyguardSecure()) {
-            // Check if the admin has disabled the camera specifically for the keyguard
-            return (mDevicePolicyManager.getKeyguardDisabledFeatures(null, mCurrentUserId)
-                    & DevicePolicyManager.KEYGUARD_DISABLE_SECURE_CAMERA) == 0;
-        }
-
-        return true;
-    }
-
     public void notifyFpAuthModeChanged() {
         updateDozing();
     }
@@ -5101,10 +5095,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     public boolean isKeyguardShowing() {
-        if (mStatusBarKeyguardViewManager == null) {
-            Slog.i(TAG, "isKeyguardShowing() called before startKeyguard(), returning true");
-            return true;
-        }
         return mStatusBarKeyguardViewManager.isShowing();
     }
 
