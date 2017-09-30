@@ -32,11 +32,13 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.UserManager;
 import android.provider.AlarmClock;
 import android.provider.Settings;
+import android.provider.CalendarContract.Events;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,7 +72,7 @@ import com.android.systemui.statusbar.policy.UserInfoController.OnUserInfoChange
 import com.android.systemui.tuner.TunerService;
 
 public class QSFooter extends FrameLayout implements
-        NextAlarmChangeCallback, OnClickListener, OnUserInfoChangedListener, EmergencyListener,
+        NextAlarmChangeCallback, OnClickListener, OnLongClickListener, OnUserInfoChangedListener, EmergencyListener,
         SignalCallback {
     private static final float EXPAND_INDICATOR_THRESHOLD = .93f;
 
@@ -149,6 +151,7 @@ public class QSFooter extends FrameLayout implements
         mAlarmStatusCollapsed = findViewById(R.id.alarm_status_collapsed);
         mAlarmStatus = findViewById(R.id.alarm_status);
         mDateTimeGroup.setOnClickListener(this);
+        mDateTimeGroup.setOnLongClickListener(this);
 
         mMultiUserSwitch = findViewById(R.id.multi_user_switch);
         mMultiUserAvatar = mMultiUserSwitch.findViewById(R.id.multi_user_avatar);
@@ -419,9 +422,23 @@ public class QSFooter extends FrameLayout implements
         }
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        if (v == mDateTimeGroup) {
+            startDateTimeLongClickActivity();
+        }
+        return false;
+    }
+
     private void startSettingsActivity() {
         mActivityStarter.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS),
                 true /* dismissShade */);
+    }
+
+    private void startDateTimeLongClickActivity() {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+            intent.setData(Events.CONTENT_URI);
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 
     @Override
