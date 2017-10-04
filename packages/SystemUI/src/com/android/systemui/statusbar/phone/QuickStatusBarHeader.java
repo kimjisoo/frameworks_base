@@ -22,11 +22,13 @@ import android.content.Context;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,7 +57,6 @@ import com.android.systemui.statusbar.policy.NextAlarmController.NextAlarmChange
 import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.UserInfoController.OnUserInfoChangedListener;
 import com.android.systemui.tuner.TunerService;
-
 public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         NextAlarmChangeCallback, OnClickListener, OnUserInfoChangedListener, EmergencyListener,
         SignalCallback {
@@ -391,9 +392,25 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     }
 
     private void startCalendarActivity() {
-        Intent calIntent = new Intent(Intent.ACTION_MAIN);
-        calIntent.addCategory(Intent.CATEGORY_APP_CALENDAR);
-        mActivityStarter.startActivity(calIntent, true /* dismissShade */);
+        PackageManager pm = mContext.getPackageManager();
+          try{
+            Intent intent = pm.getLaunchIntentForPackage("com.simplemobiletools.calendar");
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            if(intent == null){
+                throw new PackageManager.NameNotFoundException();
+            }else{
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mActivityStarter.startActivity(intent, true /* dismissShade */);
+            }
+          }catch(PackageManager.NameNotFoundException e){
+            Log.e("Launch",e.getMessage());
+          }
+            Intent intent = pm.getLaunchIntentForPackage("com.simplemobiletools.calendar");
+            if(intent == null){
+                Intent calIntent = new Intent(Intent.ACTION_MAIN);
+                calIntent.addCategory(Intent.CATEGORY_APP_CALENDAR);
+                mActivityStarter.startActivity(calIntent, true /* dismissShade */);
+          }
     }
 
     private void startAlarmsActivity() {
