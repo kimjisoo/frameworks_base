@@ -125,7 +125,7 @@ class AlertWindowNotification {
             }
         }
 
-        mNotificationManager.notify(mNotificationTag, NOTIFICATION_ID, builder.build());
+//        mNotificationManager.notify(mNotificationTag, NOTIFICATION_ID, builder.build());
     }
 
     private PendingIntent getContentIntent(Context context, String packageName) {
