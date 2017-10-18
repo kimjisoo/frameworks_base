@@ -22,6 +22,7 @@ import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -30,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.UserManager;
 import android.provider.AlarmClock;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
@@ -106,6 +108,11 @@ public class QSFooter extends FrameLayout implements
     private View mDateTimeGroup;
     private boolean mKeyguardShowing;
     private TouchAnimator mAlarmAnimator;
+
+    private boolean hasSettingsIcon;
+    private boolean hasEdit;
+    private boolean hasExpandIndicator;
+    private boolean hasMultiUserSwitch;
 
     public QSFooter(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -334,13 +341,17 @@ public class QSFooter extends FrameLayout implements
                 TunerService.isTunerEnabled(mContext) ? View.INVISIBLE : View.INVISIBLE);
         final boolean isDemo = UserManager.isDeviceInDemoMode(mContext);
 
-        mMultiUserSwitch.setVisibility((mExpanded || mAlwaysShowMultiUserSwitch)
+        hasMultiUserSwitch = !isMultiUserSwitchDisabled();
+        mMultiUserSwitch.setVisibility((mExpanded && mAlwaysShowMultiUserSwitch)
                 && mMultiUserSwitch.hasMultipleUsers() && !isDemo
-                ? View.VISIBLE : View.INVISIBLE);
-
-        if (mShowEditIcon) {
-            mEdit.setVisibility(isDemo || !mExpanded ? View.INVISIBLE : View.VISIBLE);
-        }
+                ? View.VISIBLE : View.GONE);
+        mMultiUserAvatar.setVisibility(hasMultiUserSwitch ? View.VISIBLE : View.GONE);
+        hasEdit = !isEditDisabled();
+        mEdit.setVisibility(hasEdit && !isDemo && mExpanded ? View.VISIBLE : View.GONE);
+        hasSettingsIcon = !isSettingsIconDisabled();
+        mSettingsButton.setVisibility(hasSettingsIcon ? View.VISIBLE : View.GONE);
+        hasExpandIndicator = !isExpandIndicatorDisabled();
+        mExpandIndicator.setVisibility(hasExpandIndicator ? View.VISIBLE : View.GONE);
     }
 
     private void updateListeners() {
@@ -434,5 +445,25 @@ public class QSFooter extends FrameLayout implements
                     Mode.SRC_IN);
         }
         mMultiUserAvatar.setImageDrawable(picture);
+    }
+
+    public boolean isSettingsIconDisabled() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.QS_SETTINGS_ICON_TOGGLE, 0) == 1;
+    }
+
+    public boolean isEditDisabled() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.QS_EDIT_TOGGLE, 0) == 1;
+    }
+
+    public boolean isExpandIndicatorDisabled() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.QS_EXPAND_INDICATOR_TOGGLE, 0) == 1;
+    }
+
+    public boolean isMultiUserSwitchDisabled() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.QS_MULTIUSER_SWITCH_TOGGLE, 0) == 1;
     }
 }
