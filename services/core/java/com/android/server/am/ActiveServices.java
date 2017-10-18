@@ -901,8 +901,6 @@ public final class ActiveServices {
                                     PendingIntent.getActivityAsUser(context, 0, intent,
                                             PendingIntent.FLAG_UPDATE_CURRENT,
                                             null, new UserHandle(smap.mUserId)));
-            nm.notifyAsUser(null, SystemMessageProto.SystemMessage.NOTE_FOREGROUND_SERVICES,
-                    n.build(), new UserHandle(smap.mUserId));
         } else {
             nm.cancelAsUser(null, SystemMessageProto.SystemMessage.NOTE_FOREGROUND_SERVICES,
                     new UserHandle(smap.mUserId));
