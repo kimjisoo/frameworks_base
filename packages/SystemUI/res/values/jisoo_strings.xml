@@ -46,8 +46,6 @@
     <string name="quick_settings_dnd_off">DnD off</string>
     <string name="quick_settings_flashlight_on">Torch on</string>
     <string name="quick_settings_flashlight_off">Torch off</string>
-    <string name="quick_settings_location_on">Location on</string>
-    <string name="quick_settings_location_off">Location off</string>
     <string name="quick_settings_usb_tether_on">Tether on</string>
     <string name="quick_settings_usb_tether_off">Tether off</string>
     <string name="quick_settings_wifi_off">Wi-Fi off</string>
@@ -56,6 +54,7 @@
     <string name="quick_settings_location_battery">Network only</string>
     <string name="quick_settings_location_device">GPS only</string>
     <string name="quick_settings_location_high">High accuracy</string>
+    <string name="quick_settings_location_on">Location on</string>
     <string name="quick_settings_location_off">Location off</string>
 
     <!-- Advance location quick setting tile -->
