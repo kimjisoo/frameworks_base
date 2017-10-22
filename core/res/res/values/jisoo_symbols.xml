@@ -31,4 +31,10 @@
   <java-symbol type="style" name="GlobalActionsAnimationTop" />
   <java-symbol type="style" name="GlobalActionsAnimationEnter" />
 
+  <!-- Slim recent app screen-->
+  <java-symbol type="integer" name="config_recentDefaultDur" />
+  <java-symbol type="style" name="Animation.SlimRecentScreen" />
+  <java-symbol type="anim" name="recent_enter" />
+  <java-symbol type="anim" name="recent_screen_fade_out" />
+
 </resources>

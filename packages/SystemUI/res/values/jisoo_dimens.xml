@@ -56,5 +56,6 @@
     <dimen name="pie_status_offset">15dp</dimen>
     <dimen name="pie_status_text_top_margin">10dp</dimen>
     <dimen name="pie_status_text_top_margin_land">9dp</dimen>
-
+    <!-- temp for Slim recents -->
+    <dimen name="floating_action_button_translation_z">6dp</dimen>
 </resources>
