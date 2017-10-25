@@ -14,13 +14,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
- 
-  <java-symbol type="string" name="reboot_to_recovery_title" />
-  <java-symbol type="string" name="reboot_to_recovery_message" />
-  <java-symbol type="string" name="reboot_to_bootloader_title" />
-  <java-symbol type="string" name="reboot_to_bootloader_message" />
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-  <java-symbol type="integer" name="config_backSleepTimeout" />
+    <!-- sleep long press back -->
+    <integer name="config_backSleepTimeout">600</integer>
 
 </resources>
+

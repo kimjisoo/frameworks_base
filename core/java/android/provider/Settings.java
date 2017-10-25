@@ -6909,6 +6909,12 @@ public final class Settings {
         public static final String ASSISTANT = "assistant";
 
         /**
+         * Whether to sleep screen by long-pressing the Back button
+         * @hide
+         */
+        public static final String SLEEP_LONGPRESS_BACK = "sleep_longpress_back";
+
+        /**
          * Whether the camera launch gesture should be disabled.
          *
          * @hide
