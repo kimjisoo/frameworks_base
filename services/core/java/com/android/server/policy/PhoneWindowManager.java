@@ -172,6 +172,7 @@ import android.os.IDeviceIdleController;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.IPowerManager;
 import android.os.PowerManager;
 import android.os.PowerManagerInternal;
 import android.os.Process;
@@ -576,6 +577,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mUseTvRouting;
 
     private boolean mHandleVolumeKeysInWM;
+
+    int mBackSleepTimeout;
 
     int mPointerLocationMode = 0; // guarded by mLock
 
@@ -1682,6 +1685,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private final ScreenshotRunnable mScreenshotRunnable = new ScreenshotRunnable();
 
+    Runnable mBackLongPress = new Runnable() {
+        public void run() {
+              PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+              Log.d(TAG, "Gesture!!");
+              if (pm != null) {
+              pm.goToSleep(SystemClock.uptimeMillis());
+              }
+        }
+    };
+
     @Override
     public void showGlobalActions() {
         mHandler.removeMessages(MSG_DISPATCH_SHOW_GLOBAL_ACTIONS);
@@ -2009,6 +2022,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mHandleVolumeKeysInWM = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_handleVolumeKeysInWindowManager);
+
+        mBackSleepTimeout = mContext.getResources().getInteger(
+                com.android.internal.R.integer.config_backSleepTimeout);
 
         readConfigurationDependentBehaviors();
 
@@ -3398,6 +3414,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mPendingCapsLockToggle = false;
         }
 
+        if (keyCode == KeyEvent.KEYCODE_BACK && !down) {
+            mHandler.removeCallbacks(mBackLongPress);
+        }
+
         // First we always handle the home key here, so applications
         // can never break it, although if keyguard is on, we do let
         // it handle it, because that gives us the correct 5 second
@@ -3572,6 +3592,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mHandler.post(mScreenshotRunnable);
             }
             return -1;
+        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.SLEEP_LONGPRESS_BACK, 0, UserHandle.USER_CURRENT) == 1) {
+                if (down && repeatCount == 0) {
+                    mHandler.postDelayed(mBackLongPress, mBackSleepTimeout);
+                }
+            }
         } else if (keyCode == KeyEvent.KEYCODE_BRIGHTNESS_UP
                 || keyCode == KeyEvent.KEYCODE_BRIGHTNESS_DOWN) {
             if (down) {
