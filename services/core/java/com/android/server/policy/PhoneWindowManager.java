@@ -311,7 +311,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     static final int LAST_LONG_PRESS_HOME_BEHAVIOR = LONG_PRESS_HOME_ASSIST;
 
     static final int DOUBLE_TAP_HOME_NOTHING = 0;
-    static final int DOUBLE_TAP_HOME_RECENT_SYSTEM_UI = 1;
+    static final int DOUBLE_TAP_HOME_NOTIFICATIONS = 1;
 
     static final int SHORT_PRESS_WINDOW_NOTHING = 0;
     static final int SHORT_PRESS_WINDOW_PICTURE_IN_PICTURE = 1;
@@ -1804,9 +1804,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void handleDoubleTapOnHome() {
-        if (mDoubleTapOnHomeBehavior == DOUBLE_TAP_HOME_RECENT_SYSTEM_UI) {
+        if (mDoubleTapOnHomeBehavior == DOUBLE_TAP_HOME_NOTIFICATIONS) {
             mHomeConsumed = true;
-            toggleRecentApps();
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.expandNotificationsPanel();
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
+            }
         }
     }
 
@@ -2169,7 +2176,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mDoubleTapOnHomeBehavior = res.getInteger(
                 com.android.internal.R.integer.config_doubleTapOnHomeBehavior);
         if (mDoubleTapOnHomeBehavior < DOUBLE_TAP_HOME_NOTHING ||
-                mDoubleTapOnHomeBehavior > DOUBLE_TAP_HOME_RECENT_SYSTEM_UI) {
+                mDoubleTapOnHomeBehavior > DOUBLE_TAP_HOME_NOTIFICATIONS) {
             mDoubleTapOnHomeBehavior = LONG_PRESS_HOME_NOTHING;
         }
 
@@ -3460,8 +3467,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mHomeDoubleTapPending = false;
                     mHandler.removeCallbacks(mHomeDoubleTapTimeoutRunnable);
                     handleDoubleTapOnHome();
-                } else if (mDoubleTapOnHomeBehavior == DOUBLE_TAP_HOME_RECENT_SYSTEM_UI) {
-                    preloadRecentApps();
                 }
             } else if ((event.getFlags() & KeyEvent.FLAG_LONG_PRESS) != 0) {
                 if (mHasFeatureLeanback) {

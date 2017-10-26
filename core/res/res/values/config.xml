@@ -1066,11 +1066,11 @@
 
     <!-- Control the behavior when the user double-taps the home button.
             0 - Nothing
-            1 - Recent apps view in SystemUI
+            1 - Show notification panel
          This needs to match the constants in
          policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
     -->
-    <integer name="config_doubleTapOnHomeBehavior">0</integer>
+    <integer name="config_doubleTapOnHomeBehavior">1</integer>
 
     <!-- Minimum screen brightness setting allowed by the power manager.
          The user is forbidden from setting the brightness below this level. -->
