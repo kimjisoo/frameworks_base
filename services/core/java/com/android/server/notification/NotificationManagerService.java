@@ -203,7 +203,7 @@ import java.util.concurrent.TimeUnit;
 /** {@hide} */
 public class NotificationManagerService extends SystemService {
     static final String TAG = "NotificationService";
-    static final boolean DBG = Log.isLoggable(TAG, Log.DEBUG);
+    static final boolean DBG = false;
     public static final boolean ENABLE_CHILD_NOTIFICATIONS
             = SystemProperties.getBoolean("debug.child_notifs", true);
 
@@ -3221,9 +3221,6 @@ public class NotificationManagerService extends SystemService {
                     + ", notificationUid=" + notificationUid
                     + ", notification=" + notification;
             Log.e(TAG, noChannelStr);
-            doChannelWarningToast("Developer warning for package \"" + pkg + "\"\n" +
-                    "Failed to post notification on channel \"" + channelId + "\"\n" +
-                    "See log for more details");
             return;
         }
 
