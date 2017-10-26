@@ -470,8 +470,6 @@ public class Recents extends SystemUI
                 mDraggingInRecentsCurrentUser = currentUser;
                 return true;
             } else {
-                EventBus.getDefault().send(new ShowUserToastEvent(
-                        R.string.dock_non_resizeble_failed_to_dock_text, Toast.LENGTH_SHORT));
                 return false;
             }
         } else {

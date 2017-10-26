@@ -126,8 +126,7 @@ public class ForcedResizableInfoActivityController {
     }
 
     private void activityDismissingDockedStack() {
-        EventBus.getDefault().send(new ShowUserToastEvent(
-                R.string.dock_non_resizeble_failed_to_dock_text, Toast.LENGTH_SHORT));
+        return;
     }
 
     private void activityLaunchOnSecondaryDisplayFailed() {

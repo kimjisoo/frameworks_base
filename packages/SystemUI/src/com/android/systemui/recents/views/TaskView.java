@@ -613,18 +613,6 @@ public class TaskView extends FixedSizeFrameLayout implements Task.TaskCallbacks
         mIsDisabledInSafeMode = !mTask.isSystemApp && ssp.isInSafeMode();
         mThumbnailView.bindToTask(mTask, mIsDisabledInSafeMode, displayOrientation, displayRect);
         mHeaderView.bindToTask(mTask, mTouchExplorationEnabled, mIsDisabledInSafeMode);
-
-        if (!t.isDockable && ssp.hasDockedTask()) {
-            if (mIncompatibleAppToastView == null) {
-                mIncompatibleAppToastView = Utilities.findViewStubById(this,
-                        R.id.incompatible_app_toast_stub).inflate();
-                TextView msg = findViewById(com.android.internal.R.id.message);
-                msg.setText(R.string.dock_non_resizeble_failed_to_dock_text);
-            }
-            mIncompatibleAppToastView.setVisibility(View.VISIBLE);
-        } else if (mIncompatibleAppToastView != null) {
-            mIncompatibleAppToastView.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override

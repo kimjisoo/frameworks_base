@@ -1169,9 +1169,7 @@ public class ActivityManager {
      * @hide
      */
     static public boolean supportsSplitScreenMultiWindow(Context context) {
-        return supportsMultiWindow(context)
-                && Resources.getSystem().getBoolean(
-                    com.android.internal.R.bool.config_supportsSplitScreenMultiWindow);
+        return true;
     }
 
     /** @removed */
