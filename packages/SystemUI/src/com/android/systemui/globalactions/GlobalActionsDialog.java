@@ -439,7 +439,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         @Override
         public void onPress() {
             // shutdown by making sure radio and power are handled accordingly.
-            mWindowManagerFuncs.shutdown();
+            mWindowManagerFuncs.shutdown(true);
         }
     }
 
@@ -470,7 +470,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
 
         @Override
         public void onPress() {
-            mWindowManagerFuncs.reboot(false);
+            mWindowManagerFuncs.reboot(false, false);
         }
     }
 
