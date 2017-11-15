@@ -116,7 +116,12 @@ public class HotspotTile extends QSTileImpl<AirplaneBooleanState> {
 
     @Override
     protected void handleUpdateState(AirplaneBooleanState state, Object arg) {
-        state.label = mContext.getString(R.string.quick_settings_hotspot_label);
+        final boolean labelOn = mController.isHotspotEnabled();
+        if (labelOn) {
+            state.label = mContext.getString(R.string.quick_settings_hotspot_on);
+        } else {
+            state.label = mContext.getString(R.string.quick_settings_hotspot_off);
+        }
 
         checkIfRestrictionEnforcedByAdminOnly(state, UserManager.DISALLOW_CONFIG_TETHERING);
         if (arg instanceof Boolean) {
