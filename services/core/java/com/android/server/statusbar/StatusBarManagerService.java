@@ -778,24 +778,28 @@ public class StatusBarManagerService extends IStatusBarService.Stub {
      * Allows the status bar to shutdown the device.
      */
     @Override
-    public void shutdown() {
+    public void shutdown(boolean confirm) {
         enforceStatusBarService();
         long identity = Binder.clearCallingIdentity();
         try {
             // ShutdownThread displays UI, so give it a UI context.
             mHandler.post(() ->
                     ShutdownThread.shutdown(getUiContext(),
-                        PowerManager.SHUTDOWN_USER_REQUESTED, false));
+                        PowerManager.SHUTDOWN_USER_REQUESTED, confirm));
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
+    }
+
+    public void shutdown() {
+        shutdown(false);
     }
 
     /**
      * Allows the status bar to reboot the device.
      */
     @Override
-    public void reboot(boolean safeMode) {
+    public void reboot(boolean safeMode, boolean confirm) {
         enforceStatusBarService();
         long identity = Binder.clearCallingIdentity();
         try {
@@ -805,12 +809,16 @@ public class StatusBarManagerService extends IStatusBarService.Stub {
                     ShutdownThread.rebootSafeMode(getUiContext(), false);
                 } else {
                     ShutdownThread.reboot(getUiContext(),
-                            PowerManager.SHUTDOWN_USER_REQUESTED, false);
+                            PowerManager.SHUTDOWN_USER_REQUESTED, true);
                 }
             });
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
+    }
+
+    public void reboot(boolean safeMode) {
+        reboot(safeMode, false);
     }
 
     /**
