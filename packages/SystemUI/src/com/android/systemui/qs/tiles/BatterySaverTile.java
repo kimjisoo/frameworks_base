@@ -113,8 +113,13 @@ public class BatterySaverTile extends QSTileImpl<BooleanState> implements
             state.icon = ResourceIcon.get(R.drawable.ic_qs_battery_saver_charging);
             state.label = mContext.getString(R.string.keyguard_plugged_in);
         } else {
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_battery_saver);
-            state.label = mContext.getString(R.string.battery_detail_switch_title);
+            if (mPowerSave) {
+                   state.icon = ResourceIcon.get(R.drawable.ic_qs_battery_saver);
+                   state.label = mContext.getString(R.string.quick_settings_battery_saver_on);
+            } else {
+                   state.icon = ResourceIcon.get(R.drawable.ic_qs_battery_saver);
+                   state.label = mContext.getString(R.string.quick_settings_battery_saver_off);
+            }
         }
         state.contentDescription = state.label;
         state.value = mPowerSave;
