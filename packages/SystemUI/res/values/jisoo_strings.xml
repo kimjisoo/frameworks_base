@@ -28,5 +28,8 @@
     <string name="quick_settings_usb_tether_label">USB tethering</string>
     <string name="quick_settings_usb_tether_on">USB tether on</string>
     <string name="quick_settings_usb_tether_off">USB tether off</string>
+    <string name="quick_settings_caffeine_label">Caffeine</string>
+    <string name="accessibility_quick_settings_caffeine_off">Caffeine off</string>
+    <string name="accessibility_quick_settings_caffeine_on">Caffeine on</string>
 
 </resources>
