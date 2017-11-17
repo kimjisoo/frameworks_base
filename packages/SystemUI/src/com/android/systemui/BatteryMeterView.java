@@ -68,6 +68,7 @@ public class BatteryMeterView extends LinearLayout implements
     private SettingObserver mSettingObserver;
     private int mTextColor;
     private int mLevel;
+    private boolean mCharging;
     private boolean mForceShowPercent;
 
     private int mDarkModeBackgroundColor;
@@ -186,6 +187,7 @@ public class BatteryMeterView extends LinearLayout implements
         mDrawable.setBatteryLevel(level);
         mDrawable.setCharging(pluggedIn);
         mLevel = level;
+        mCharging = charging;
         updatePercentText();
         setContentDescription(
                 getContext().getString(charging ? R.string.accessibility_battery_level_charging
@@ -204,8 +206,14 @@ public class BatteryMeterView extends LinearLayout implements
 
     private void updatePercentText() {
         if (mBatteryPercentView != null) {
-            mBatteryPercentView.setText(
-                    NumberFormat.getPercentInstance().format(mLevel / 100f));
+            if (mCharging) {
+                String percentage = NumberFormat.getPercentInstance().format(mLevel / 100f);
+                String chargingsymbol = "+";
+                mBatteryPercentView.setText(chargingsymbol + percentage);
+            } else {
+                mBatteryPercentView.setText(
+                        NumberFormat.getPercentInstance().format(mLevel / 100f));
+            }
         }
     }
 
