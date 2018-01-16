@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -34,6 +35,7 @@ import android.provider.CalendarContract.Events;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -402,9 +404,19 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
     }
 
     private void startDateTimeLongClickActivity() {
-        Intent intent = new Intent(Intent.ACTION_INSERT);
-            intent.setData(Events.CONTENT_URI);
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+       PackageManager pm = mContext.getPackageManager();
+          try{
+            Intent calIntent = pm.getLaunchIntentForPackage("com.simplemobiletools.calendar");
+            calIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            if(calIntent == null){
+                throw new PackageManager.NameNotFoundException();
+            }else{
+                calIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mActivityStarter.startActivity(calIntent, true /* dismissShade */);
+            }
+          }catch(PackageManager.NameNotFoundException e){
+            Log.e("Launch",e.getMessage());
+          }
     }
 
     @Override
