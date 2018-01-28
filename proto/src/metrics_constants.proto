@@ -4571,6 +4571,9 @@ message MetricsEvent {
     // Additional QS tiles
     QS_ADDED = 1144;
 
+    // Tweaks
+    TWEAKS = 1145;
+
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
   }
