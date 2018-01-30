@@ -38,6 +38,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraAccessException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -157,6 +160,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private boolean mLeftIsVoiceAssist;
     private AssistManager mAssistManager;
     private Drawable mLeftAssistIcon;
+    private boolean mTorchEnabled = false;
 
     private IntentButton mRightButton = new DefaultRightButton();
     private Extension<IntentButton> mRightExtension;
@@ -550,11 +554,24 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     public void launchLeftAffordance() {
-        if (mLeftIsVoiceAssist) {
-            launchVoiceAssist();
-        } else {
-            launchPhone();
-        }
+        torchToggle();
+    }
+
+    private void torchToggle() {
+        try {
+           CameraManager cameraManager = (CameraManager)
+                  mContext.getSystemService(Context.CAMERA_SERVICE);
+           for (final String cameraId : cameraManager.getCameraIdList()) {
+                  CameraCharacteristics characteristics =
+                  cameraManager.getCameraCharacteristics(cameraId);
+                  int orient = characteristics.get(CameraCharacteristics.LENS_FACING);
+                  if (orient == CameraCharacteristics.LENS_FACING_BACK) {
+                       cameraManager.setTorchMode(cameraId, !mTorchEnabled);
+                       mTorchEnabled = !mTorchEnabled;
+                  }
+           }
+           } catch (CameraAccessException e) {
+           }
     }
 
     private void launchVoiceAssist() {
