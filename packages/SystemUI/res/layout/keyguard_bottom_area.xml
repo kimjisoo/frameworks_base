@@ -66,7 +66,7 @@
         android:layout_height="@dimen/keyguard_affordance_height"
         android:layout_width="@dimen/keyguard_affordance_width"
         android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_camera_alt_24dp"
+        android:src="@drawable/ic_blank"
         android:scaleType="center"
         android:contentDescription="@string/accessibility_camera_button"
         android:tint="?attr/wallpaperTextColor" />
@@ -76,7 +76,7 @@
         android:layout_height="@dimen/keyguard_affordance_height"
         android:layout_width="@dimen/keyguard_affordance_width"
         android:layout_gravity="bottom|start"
-        android:src="@drawable/ic_phone_24dp"
+        android:src="@drawable/ic_blank"
         android:scaleType="center"
         android:contentDescription="@string/accessibility_phone_button"
         android:tint="?attr/wallpaperTextColor" />
