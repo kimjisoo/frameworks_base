@@ -25,6 +25,9 @@
     <string name="accessibility_quick_settings_sync_changed_on">Sync turned on</string>
     <string name="quick_settings_sync_on">Sync on</string>
     <string name="quick_settings_sync_off">Sync off</string>
+    <string name="quick_settings_bluetooth_off">BT off</string>
+    <string name="quick_settings_bluetooth_on">BT on</string>
+    <string name="quick_settings_bluetooth_connecting">Connecting</string>
     <string name="quick_settings_usb_tether_label">USB tethering</string>
     <string name="quick_settings_usb_tether_on">USB tether on</string>
     <string name="quick_settings_usb_tether_off">USB tether off</string>
