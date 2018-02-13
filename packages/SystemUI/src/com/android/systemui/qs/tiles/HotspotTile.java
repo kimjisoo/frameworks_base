@@ -112,7 +112,6 @@ public class HotspotTile extends QSTileImpl<AirplaneBooleanState> {
         if (state.slash == null) {
             state.slash = new SlashState();
         }
-        state.label = mContext.getString(R.string.quick_settings_hotspot_label);
 
         checkIfRestrictionEnforcedByAdminOnly(state, UserManager.DISALLOW_CONFIG_TETHERING);
         if (arg instanceof Boolean) {
@@ -131,6 +130,11 @@ public class HotspotTile extends QSTileImpl<AirplaneBooleanState> {
         state.contentDescription = state.label;
         state.state = state.isAirplaneMode ? Tile.STATE_UNAVAILABLE
                 : state.value || state.isTransient ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
+        if (state.value) {
+            state.label = mHost.getContext().getString(R.string.quick_settings_hotspot_on);
+        } else {
+            state.label = mHost.getContext().getString(R.string.quick_settings_hotspot_off);
+        }
     }
 
     @Override
