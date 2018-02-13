@@ -85,10 +85,14 @@ public class AirplaneModeTile extends QSTileImpl<BooleanState> {
         final int value = arg instanceof Integer ? (Integer)arg : mSetting.getValue();
         final boolean airplaneMode = value != 0;
         state.value = airplaneMode;
-        state.label = mContext.getString(R.string.airplane_mode);
         state.icon = mIcon;
         if (state.slash == null) {
             state.slash = new SlashState();
+        }
+        if (airplaneMode) {
+            state.label = mHost.getContext().getString(R.string.quick_settings_airplane_mode_on);
+        } else {
+            state.label = mHost.getContext().getString(R.string.quick_settings_airplane_mode_off);
         }
         state.slash.isSlashed = !airplaneMode;
         state.state = airplaneMode ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;

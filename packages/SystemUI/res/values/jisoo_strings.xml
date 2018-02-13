@@ -18,6 +18,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Additional QS tiles -->
+    <string name="quick_settings_airplane_mode_on">Airplane on</string>
+    <string name="quick_settings_airplane_mode_off">Airplane off</string>
     <string name="quick_settings_sync_label">Sync</string>
     <string name="accessibility_quick_settings_sync_off">Sync off</string>
     <string name="accessibility_quick_settings_sync_on">Sync on</string>
