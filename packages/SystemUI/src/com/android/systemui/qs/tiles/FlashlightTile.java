@@ -101,13 +101,13 @@ public class FlashlightTile extends QSTileImpl<BooleanState> implements
         if (state.slash == null) {
             state.slash = new SlashState();
         }
-        state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_label);
         if (!mFlashlightController.isAvailable()) {
             state.icon = mIcon;
             state.slash.isSlashed = true;
             state.contentDescription = mContext.getString(
                     R.string.accessibility_quick_settings_flashlight_unavailable);
             state.state = Tile.STATE_UNAVAILABLE;
+            state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_unavailable);
             return;
         }
         if (arg instanceof Boolean) {
@@ -124,6 +124,11 @@ public class FlashlightTile extends QSTileImpl<BooleanState> implements
         state.contentDescription = mContext.getString(R.string.quick_settings_flashlight_label);
         state.expandedAccessibilityClassName = Switch.class.getName();
         state.state = state.value ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
+        if (state.value) {
+            state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_on);
+        } else {
+            state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_off);
+        }
     }
 
     @Override
