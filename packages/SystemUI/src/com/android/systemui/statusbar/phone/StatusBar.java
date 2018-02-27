@@ -3037,8 +3037,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         } else if (KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN == key) {
             mMetricsLogger.action(MetricsEvent.ACTION_SYSTEM_NAVIGATION_KEY_DOWN);
             if (mNotificationPanel.isFullyCollapsed()) {
-                mNotificationPanel.expand(true /* animate */);
-                mMetricsLogger.count(NotificationPanelView.COUNTER_PANEL_OPEN, 1);
+                mNotificationPanel.expandWithQs();
+                mMetricsLogger.count(NotificationPanelView.COUNTER_PANEL_OPEN_QS, 1);
             } else if (!mNotificationPanel.isInSettings() && !mNotificationPanel.isExpanding()){
                 mNotificationPanel.flingSettings(0 /* velocity */, true /* expand */);
                 mMetricsLogger.count(NotificationPanelView.COUNTER_PANEL_OPEN_QS, 1);
