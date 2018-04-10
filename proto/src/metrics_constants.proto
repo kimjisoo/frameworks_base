@@ -4577,10 +4577,10 @@ message MetricsEvent {
 
     // ---- End O-MR1 Constants, all O-MR1 constants go above this line ----
     // Additional QS tiles
-    QS_ADDED = 1144;
+    QS_ADDED = 1146;
 
     // Tweaks
-    TWEAKS = 1145;
+    TWEAKS = 1147;
 
     // ACTION: Stop an app and turn on background check
     // CATEGORY: SETTINGS
